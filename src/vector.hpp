@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/19 07:43:42 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:31:43 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,11 @@ namespace ft
                 return static_cast<size_type>(_end_l - _begin);
             }
             void _destruct_at_end(pointer __new_last);
-            void length_error()
+            void length_error() const
             {
                 std::__throw_length_error("vector");
             }
-            void out_of_range()
+            void out_of_range() const
             {
                 std::__throw_out_of_range("vector");
             }
@@ -140,7 +140,7 @@ namespace ft
                     _construct_at_end();
                 }
             }
-            explicit vector (const allocator_type &_a = allocator_type()) : _base(_a)
+            explicit vector (const allocator_type &_a /*= allocator_type()*/) : _base(_a)
             {
             }
             explicit vector (size_type _n, const_reference _val = value_type())
@@ -246,14 +246,14 @@ namespace ft
             // }
 /* ************************************************************************** */
                             // const iterators 2 :(in)
-            // const_iterator cbegin() const throw()
-            // {
-            //     return begin();
-            // }
-            // const_iterator cend() const throw()
-            // {
-            //     return end();
-            // }
+            const_iterator cbegin() const throw()
+            {
+                return begin();
+            }
+            const_iterator cend() const throw()
+            {
+                return end();
+            }
             // const_reverse_iterator crbegin() const throw()
             // {
             //     return rbegin();
@@ -354,8 +354,35 @@ namespace ft
                 else
                     _push_back_slow_path(_val);
             }
+            void pop_back()
+            {
+                _base._destruct_at_end(_base._end - 1);
+            }
+            iterator insert(const_iterator _pos, const_reference _val);
+            iterator insert(const_iterator _pos, size_type _n, const_reference _val);
 
 
+/* ************************************************************************** */
+                            // private struct :(in)
+/* ************************************************************************** */
+        public:
+            template< class _Tp, class _Allocator>
+            struct tmp_buffer
+            {
+                _vector_base<Tp, Allocator> _tmp;
+                
+                tmp_buffer(size_type _cap, size_type _start, allocator_type& _alloc)
+                    : _tmp(_alloc)
+                {
+                    pointer _first;
+                    _first = _cap != 0 ? alloc_traits::allocate(_alloc, _cap) : nullptr;
+                    _tmp._begin = _tmp._end = _first + _start;
+                    _tmp._end_l = _first + _cap;
+                }
+                ~tmp_buffer()
+                {
+                }
+            };
 /* ************************************************************************** */
                             // private functions :(in)
 /* ************************************************************************** */      
@@ -363,12 +390,18 @@ namespace ft
             void _vallocate(size_type _n);
             void _construct_at_end(void);
             void _construct_at_end(const_reference _val);
+            void _construct_at_end(size_type _n, const_reference _val);
             template <class _Iter>
             void _construct_at_end(_Iter _first, _Iter _last);
-            // vpod _push_back_slow_path(_Up &__x);
+            void _push_back_slow_path(const_reference _val);
+            size_type _recommend(size_type _new_size) const;
+            void _swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v);
+            pointer _swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v, pointer _p);
+            void _move_range(pointer _from_s, pointer _from_e, pointer _new_s);
             
             // void _construct_at_end(size_type _n);
             // void _construct_at_end(size_type _n, const_reference _v);
+        
     };
     
 /* ************************************************************************** */
@@ -395,12 +428,19 @@ namespace ft
             alloc_traits::construct(_base._alloc, _pos);
     }
     
-     template<class _Tp, class _Allocator>
+    template<class _Tp, class _Allocator>
     void vector<_Tp, _Allocator>::_construct_at_end(const_reference _val)
     {
         pointer _pos = _base._begin;
         for (; _pos != _base._end; _pos++)
             alloc_traits::construct(_base._alloc, _pos, _val);
+    }
+
+    template<class _Tp, class _Allocator>
+    inline void vector<_Tp, _Allocator>::_construct_at_end(size_type _n, const_reference _val)
+    {
+        for (; _n; --_n, ++_base._end)
+            alloc_traits::construct(_base._alloc, _base._end, _val);
     }
     
     template <class _Tp, class _Allocator>
@@ -411,6 +451,59 @@ namespace ft
         // alloc_traits::__construct_range_forward(_base._alloc, _first, _last, _pos);
         for (; _first != _last; ++_first)
                 __emplace_back(*_first);
+    }
+    template<class _Tp, class _Allocator>
+    void vector<_Tp, _Allocator>::_push_back_slow_path(const_reference _val)
+    {
+        size_type                               size = this->size();
+        tmp_buffer<value_type, allocator_type&> _v(_recommend(size + 1), size, _base._alloc);
+        
+        alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
+        _v._tmp._end++;
+        _swap_out_circular_buffer(_v);
+    }
+    template <class _Tp, class _Allocator>
+    inline
+    typename vector<_Tp, _Allocator>::size_type
+    vector<_Tp, _Allocator>::_recommend(size_type _new_size) const
+    {
+        const size_type _ms = max_size();
+        if (_new_size > _ms)
+            _base.length_error();
+        const size_type _cap = capacity();
+        if (_cap >= _ms / 2)
+            return (_ms);
+        return (std::max<size_type>(2 * _cap, _new_size));
+    }
+    template <class _Tp, class _Allocator>
+    void vector<_Tp, _Allocator>::_swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v)
+    {
+        alloc_traits::__construct_backward(_base._alloc, _base._begin, _base._end, _v._tmp._begin);
+        std::swap(_base._begin, _v._tmp._begin);
+        std::swap(_base._end, _v._tmp._end);
+        std::swap(_base._end_l, _v._tmp._end_l);
+    }
+    template <class _Tp, class _Allocator>
+    typename vector<_Tp, _Allocator>::pointer
+    vector<_Tp, _Allocator>::_swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v, pointer _p)
+    {
+        pointer _r = _v._tmp._begin;
+        alloc_traits::__construct_backward(_base._alloc, _base._begin, _p, _v._tmp._begin);
+        alloc_traits::__construct_forward(_base._alloc, _p, _base._end, _v._tmp._end);
+        std::swap(_base._begin, _v._tmp._begin);
+        std::swap(_base._end, _v._tmp._end);
+        std::swap(_base._end_l, _v._tmp._end_l);
+        return (_r);
+    }
+    template <class _Tp, class _Allocator>
+    void vector<_Tp, _Allocator>::_move_range(pointer _from_s, pointer _from_e, pointer _new_s)
+    {
+        pointer _end_hol = _base._end;
+        difference_type _n = _end_hol - _new_s;
+        
+        for (pointer _i = _from_s + _n; _i < _from_e; ++_i, ++_base._end)
+            alloc_traits::construct(_base._alloc, _base._end, *_i);
+        std::move_backward(_from_s, _from_s + _n, _end_hol);
     }
 /* ************************************************************************** */
                                 // assignment :(out)
@@ -423,7 +516,7 @@ namespace ft
             // _base._copy_assign_alloc(_v);
             assign(_v._begin, _v._end);
         }
-        return *this;
+        return (*this);
     }
     template <class _Tp, class _Allocator>
     template <class _InputIterator>
@@ -433,6 +526,79 @@ namespace ft
         for (; _first != _last; ++_first)
             __emplace_back(*_first);
     }
+/* ************************************************************************** */
+                            // manip functions :(in)
+/* ************************************************************************** */
+    template <class _Tp, class _Allocator>
+    typename vector<_Tp, _Allocator>::iterator
+    vector<_Tp, _Allocator>::insert(const_iterator _pos, const_reference _val)
+    {
+        pointer _p = _base._begin + (_pos - begin());
+        if (_base._end != _base._end_l)
+        {
+            if (_p == _base._end)
+            {
+                alloc_traits::construct(_base._alloc,_base._end, _val);
+                ++_base._end;
+            }
+            else
+            {
+                _move_range(_p, _base._end, _p + 1);
+                const_pointer _val_add = &_val;
+                if (_p <= _val_add && _val_add < _base._end)
+                    ++_val_add;
+                *_p = *_val_add;
+            }
+        }
+        else
+        {
+            size_type                               size = this->size();
+            tmp_buffer<value_type, allocator_type&> _v(_recommend(size + 1), _p - _base._begin, _base._alloc);
+            
+            alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, _val);
+            ++_v._tmp._end;
+            _p = _swap_out_circular_buffer(_v, _p);
+        }
+        return (_make_iter(_p));
+    }
+    template <class _Tp, class _Allocator>
+    typename vector<_Tp, _Allocator>::iterator
+    vector<_Tp, _Allocator>::insert(const_iterator _pos, size_type _n, const_reference _val)
+    {
+        pointer _p = _base._begin + (_pos - begin());
+        if (_n == 0)
+            return (_make_iter(_p));
+        if (_n <= static_cast<size_type>(_base._end_l - _base._end))
+        {
+            size_type _n_hol = _n;
+            pointer _end_hol = _base._end;
+            if (static_cast<size_type>(_base._end - _p) < _n)
+            {
+                _n = _base._end - _p;
+                _construct_at_end(_n_hol - _n, _val);
+            }
+            if (_n > 0)
+            {
+                _move_range(_p, _end_hol, _p + _n_hol);
+                const_pointer _val_add = &_val;
+                if (_p <= _val_add && _val_add < _base._end)
+                    _val_add += _n_hol;
+                std::fill_n(_p, _n, *_val_add);
+            }
+        }
+        else
+        {
+            size_type                               size = this->size();
+            tmp_buffer<value_type, allocator_type&> _v(_recommend(size + 1), _p - _base._begin, _base._alloc);
+            
+            for (; _n; --_n, ++_v._tmp._end)
+                alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, _val);
+            _p = _swap_out_circular_buffer(_v, _p);
+        }
+        return (_make_iter(_p));
+    }
+
+    
 }
 
 #endif

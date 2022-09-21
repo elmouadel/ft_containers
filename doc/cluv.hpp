@@ -1052,7 +1052,6 @@ extern template class __attribute__ ((__visibility__("default"))) __vector_base_
             iterator __r = __make_iter(__p);
             return __r;
         }
-
         template <class _Tp, class _Allocator>
         void
         vector<_Tp, _Allocator>::__move_range(pointer __from_s, pointer __from_e, pointer __to)
@@ -1060,9 +1059,11 @@ extern template class __attribute__ ((__visibility__("default"))) __vector_base_
             pointer __old_last = this->__end_;
             difference_type __n = __old_last - __to;
             for (pointer __i = __from_s + __n; __i < __from_e; ++__i, ++this->__end_)
+            {
                 __alloc_traits::construct(this->__alloc(),
                                           std::__1::__to_raw_pointer(this->__end_),
                                           std::__1::move(*__i));
+            }
             std::__1::move_backward(__from_s, __from_s + __n, __old_last);
         }
 

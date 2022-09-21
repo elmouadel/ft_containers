@@ -87,12 +87,15 @@ public:
     __wrap_iter_() throw()
 
     {
+        std::cout << "const\n";
+
     }
     template <class _Up>
     __wrap_iter_(const __wrap_iter_<_Up> &__u,
                  typename enable_if<is_convertible<_Up, iterator_type>::value>::type * = 0) throw()
         : __i(__u.base())
     {
+        std::cout << "copy\n";
     }
 # 1458 "/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/iterator" 3
     reference operator*() const throw()

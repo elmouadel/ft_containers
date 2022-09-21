@@ -1,20 +1,50 @@
 #include <iostream>
-#include <iterator>
+// #include <iterator>
+#include "../../doc/__wrap_iter.hpp"
 #include "../../doc/cluv.hpp"
 // #include <vector>
+
+void std_tests()
+{
+    std::vector<int> B;
+
+    B.push_back(1);
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    std::cout << B.capacity();
+    
+    std::cout << std::endl << B.max_size() << std::endl;
+
+    B.insert(B.end() -3, 2, -2);
+    std::vector<int>::iterator it = B.begin();
+    std::cout << std::endl << B.size() << std::endl;
+    for (; it != B.end(); it++)
+    {
+        std::cout << *it << " ";
+    }
+
+    std::cout << std::endl;
+}
+
+
 int main()
 {
-    std::vector<int, std::allocator<int> > A;
-    std::vector<int, std::allocator<int> > a;
+    std_tests();
+    // system("leaks stdcontainers");
 
-    A.push_back(1);
-    A.push_back(2);
-    A.push_back(3);
-    a = A;
-    std::vector<int>::iterator it = A.begin();
-    std::vector<int>::iterator itt = a.begin();
-    // itt = 1 + it;
-    std::cout << *it;
-    std::cout << *itt;
     return(0);
 }

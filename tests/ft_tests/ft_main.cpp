@@ -3,24 +3,52 @@
 #include "../../doc/cluv.hpp"
 #include "../../src/vector_iterator.hpp"
 // #include <vector>
-// #include "../../doc/vappc.hpp"
 #include "../../src/vector.hpp"
 
-    int main()
-{
-    std::vector<int> A;
-    std::vector<char, std::allocator<char> > a;
+using namespace std;
 
-    A.push_back(1);
-    A.push_back(2);
-    A.push_back(3);
-    // int B[3] = {1 , 2, 3};
-    // ft::v_iterator<int*> it(B);
-    // ft::v_iterator<int*> itt;
-    // itt = 1 + it;
-    // std::cout << *it;
-    // std::cout << *itt;
-    // if (it != itt)
-    //     std::cout << "ok\n";
+void ft_tests()
+{
+    ft::vector<int> B;
+    
+    B.push_back(1);
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    B.push_back(*(B.end()-1) + B.size());
+    cout << B.capacity();
+    
+    cout << endl << B.max_size() << endl;
+
+   B.insert(B.end() -3 , 2, -2);
+
+    ft::vector<int>::iterator it = B.begin();
+    cout << endl << B.size() << endl;
+    for (; it != B.end(); ++it)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+}
+
+
+int main()
+{
+    ft_tests();
+    // system("leaks ftcontainers");
+
     return(0);
 }

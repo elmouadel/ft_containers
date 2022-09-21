@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:24:14 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/16 09:58:47 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/21 11:48:35 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,15 @@ namespace ft
             v_iterator() {}
             v_iterator(const pointer &_p_i) : p_i(_p_i) {}
             v_iterator(const v_iterator &rhs) : p_i(rhs.p_i) {}
-
+            template<class _Iter>
+            v_iterator(const v_iterator<_Iter> &rhs, 
+                typename std::enable_if<std::is_convertible<_Iter, iterator_type>::value>::type * = nullptr)
+                : p_i(rhs.base()){}
+            
+            iterator_type base() const throw() 
+            {
+                return (p_i);
+            }
             v_iterator &operator=(const v_iterator &rhs)
             {
                 if (this != &rhs)
@@ -115,7 +123,7 @@ namespace ft
             }
             friend difference_type operator-(const v_iterator &lhs, const v_iterator &rhs)
             {
-                return (lhs.p_i - rhs.p_i);
+                return (lhs.base() - rhs.base());
             }
             friend v_iterator operator+(difference_type _n, v_iterator rhs)
             {
