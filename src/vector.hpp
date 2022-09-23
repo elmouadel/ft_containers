@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/21 17:31:43 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/23 10:57:37 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,7 +284,14 @@ namespace ft
                 return (std::min<size_type>(alloc_traits::max_size(_base._alloc),
                                 std::numeric_limits<difference_type>::max()));
             }
-            void reserve(size_type _n);
+            void reserve(size_type _n)
+            {
+                if (_n > capacity())
+                {
+                    tmp_buffer<value_type, allocator_type &> _v(_n, size(), _base._alloc);
+                    _swap_out_circular_buffer(_v);
+                }
+            }
             void shrink_to_fit() throw();
 /* ************************************************************************** */
                             // indexing functions :(in)
@@ -360,12 +367,60 @@ namespace ft
             }
             iterator insert(const_iterator _pos, const_reference _val);
             iterator insert(const_iterator _pos, size_type _n, const_reference _val);
+            
+            template <class _InputIter>
+            typename std::enable_if<
+                    std::__is_input_iterator<_InputIter>::value && 
+                    !std::__is_forward_iterator<_InputIter>::value && 
+                    std::is_constructible<Tp, typename std::iterator_traits<_InputIter>::reference>::value,
+                    typename vector<Tp, Allocator>::iterator
+            >::type insert(const_iterator _pos, _InputIter _first, _InputIter _last);
+            
+            template <class _ForwardIter>
+            typename std::enable_if<
+                    std::__is_forward_iterator<_ForwardIter>::value && 
+                    std::is_constructible<Tp, typename std::iterator_traits<_ForwardIter>::reference>::value,
+                    typename vector<Tp, Allocator>::iterator
+            >::type insert(const_iterator _pos, _ForwardIter _first, _ForwardIter _last);
+
+            iterator erase(const_iterator _pos);
+            iterator erase(const_iterator _first, const_iterator _last);
+            void clear() throw() {_base.clear(); }
+            void resize(size_type _size)
+            {
+                resize(_size, 0);
+            }
+            void resize(size_type _size, const_reference _val)
+            {
+                size_type _hol_size = size();
+                size_type _n = _size - _hol_size;
+                if (_size < _hol_size)
+                    _base._destruct_at_end(_base._begin + _size);
+                else if (_size > _hol_size)
+                {
+                    if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
+                        _construct_at_end(_n, _val);
+                    else
+                    {
+                        tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
+                        for (; _n; --_n, ++_v._tmp._end)
+                            alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
+                        _swap_out_circular_buffer(_v);
+                    }    
+                }
+            }
+            void swap(vector &_v)
+            {
+                std::swap(_base._begin, _v._base._begin);
+                std::swap(_base._end, _v._base._end);
+                std::swap(_base._end_l, _v._base._end_l);
+            }
 
 
 /* ************************************************************************** */
                             // private struct :(in)
 /* ************************************************************************** */
-        public:
+        private:
             template< class _Tp, class _Allocator>
             struct tmp_buffer
             {
@@ -552,8 +607,7 @@ namespace ft
         }
         else
         {
-            size_type                               size = this->size();
-            tmp_buffer<value_type, allocator_type&> _v(_recommend(size + 1), _p - _base._begin, _base._alloc);
+            tmp_buffer<value_type, allocator_type&> _v(_recommend(this->size() + 1), _p - _base._begin, _base._alloc);
             
             alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, _val);
             ++_v._tmp._end;
@@ -588,8 +642,7 @@ namespace ft
         }
         else
         {
-            size_type                               size = this->size();
-            tmp_buffer<value_type, allocator_type&> _v(_recommend(size + 1), _p - _base._begin, _base._alloc);
+            tmp_buffer<value_type, allocator_type&> _v(_recommend(this->size() + _n), _p - _base._begin, _base._alloc);
             
             for (; _n; --_n, ++_v._tmp._end)
                 alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, _val);
@@ -597,7 +650,99 @@ namespace ft
         }
         return (_make_iter(_p));
     }
+    template <class _Tp, class _Allocator>
+    template <class _InputIter>
+    typename std::enable_if<
+                std::__is_input_iterator<_InputIter>::value && 
+                !std::__is_forward_iterator<_InputIter>::value && 
+                std::is_constructible<_Tp, typename std::iterator_traits<_InputIter>::reference>::value, 
+                typename vector<_Tp, _Allocator>::iterator
+            >::type vector<_Tp, _Allocator>::insert(const_iterator _pos, _InputIter _first, _InputIter _last)
+    {
+        vector  _v;
+        for (;_first != _last; ++_first)
+            _v.push_back(*_first);
+        return (insert(_pos, _v.begin(), _v.end()));
+    }
+    template <class _Tp, class _Allocator>
+    template <class _ForwardIter>
+            typename std::enable_if<
+                std::__is_forward_iterator<_ForwardIter>::value && 
+                std::is_constructible<_Tp, typename std::iterator_traits<_ForwardIter>::reference>::value,
+                typename vector<_Tp, _Allocator>::iterator
+            >::type vector<_Tp, _Allocator>::insert(const_iterator _pos, _ForwardIter _first, _ForwardIter _last)
+    {
+        pointer         _p = _base._begin + (_pos - begin());
+        difference_type _n = _last - _first;
+        if (_n <= 0)
+            return (_make_iter(_p));
+        if (_n <= _base._end_l - _base._end)
+        {
+            _ForwardIter    _iter_hol = _last;
+            pointer         _end_hol = _base._end;
+            size_type       _n_hol = _n;
+            if (_n > _base._end - _p)
+            {
+                _n = _base._end - _p;
+                _iter_hol = _first +_n;
+                _construct_at_end(_iter_hol, _last);
+            }
+            if (_n > 0)
+            {
+                _move_range(_p, _end_hol, _p + _n_hol);
+                std::copy(_first, _iter_hol, _p);
+            }
+        }
+        else
+        {
+            tmp_buffer<value_type, allocator_type&> _v(_recommend(this->size() + _n), _p - _base._begin, _base._alloc);
+            
+            for (; _first != _last; ++_first, ++_v._tmp._end)
+                alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, *_first);
+                
+            _p = _swap_out_circular_buffer(_v, _p);
+        }
+        return (_make_iter(_p));
+    }
+    template <class _Tp, class _Allocator>
+    inline typename vector<_Tp, _Allocator>::iterator
+    vector<_Tp, _Allocator>::erase(const_iterator _pos)
+    {
+        pointer _p = _base._begin + (_pos - begin());
+        iterator _ret = _make_iter(_p);
+        if (_p >= _base._end)
+            return (_ret);
+        for (; _p != _base._end; ++_p)
+            *_p = *(_p + 1);
+        alloc_traits::destroy(_base._alloc, _base._end);
+        --_base._end;
+        return (_ret);
+    }
+    template <class _Tp, class _Allocator>
+    typename vector<_Tp, _Allocator>::iterator
+    vector<_Tp, _Allocator>::erase(const_iterator _first, const_iterator _last)
+    {
+        pointer _p_last = _base._begin + (_last - begin());
+        pointer _p_first = _base._begin + (_first - begin());
+        iterator _ret = _make_iter(_p_first);
+        
+        for (; _p_last != _base._end ; ++_p_first, ++_p_last)
+            *_p_first = *_p_last;
+        
+        for (; _p_first != _base._end ; --_base._end)
+            alloc_traits::destroy(_base._alloc, _base._end);
+        return (_ret);
+    }
 
+/* ************************************************************************** */
+                            // overload functions :(out)
+/* ************************************************************************** */
+    template <class _Tp, class _Allocator>
+    inline void
+    swap(vector<_Tp, _Allocator> &_x, vector<_Tp, _Allocator> &_y)
+    {
+        _x.swap(_y);
+    }
     
 }
 

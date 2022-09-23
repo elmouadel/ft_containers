@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cstring>
-#include <__cxx_version>
+// #include <__cxx_version>
 #include <__split_buffer>
 #include <__functional_base>
 
@@ -425,10 +425,7 @@ extern template class __attribute__ ((__visibility__("default"))) __vector_base_
             void resize(size_type __sz);
             void resize(size_type __sz, const_reference __x);
 
-            void swap(vector &)
-
-                ;
-
+            void swap(vector &);
             bool __invariants() const;
 # 800 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector" 3
         private:
@@ -1169,10 +1166,8 @@ extern template class __attribute__ ((__visibility__("default"))) __vector_base_
             __split_buffer<value_type, allocator_type &> __v(__a);
             if (__first != __last)
             {
-
                 try
                 {
-
                     __v.__construct_at_end(__first, __last);
                     difference_type __old_size = __old_last - this->__begin_;
                     difference_type __old_p = __p - this->__begin_;

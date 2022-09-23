@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:55:40 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/15 13:06:16 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:43:43 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ namespace ft
         typedef typename Iterator::value_type value_type;
         typedef typename Iterator::pointer pointer;
         typedef typename Iterator::reference reference;
-        // typedef typename Iterator::iterator_category iterator_category;
+        typedef typename Iterator::iterator_category iterator_category;
     };
     
     template<class Tp>
@@ -29,7 +29,7 @@ namespace ft
         typedef Tp value_type;
         typedef Tp* pointer;
         typedef Tp& reference;
-        // typedef random_access_iterator_tag iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
     };
     
 }
