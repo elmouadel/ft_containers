@@ -4,13 +4,14 @@
 #include "../../doc/cluv.hpp"
 #include "../../src/vector_iterator.hpp"
 // #include <vector>
+#include <map>
 #include "../../src/vector.hpp"
 
 using namespace std;
 
 void ft_tests()
 {
-    ft::vector<int> B;
+    ft::vector<int> B(1, 2);
     
     B.push_back(1);
     cout << B.capacity();
@@ -33,12 +34,13 @@ void ft_tests()
     
     cout << endl << B.max_size() << endl;
 
-    B.insert(B.end() -1, B.end() - 2, B.end());
-    cout << *B.erase(B.end(), B.end() + 1) << endl;
+    ft::vector<int> A;
+    A.assign(B.begin(), B.end());
 
-    ft::vector<int>::iterator it = B.begin();
-    cout << endl << B.size() << endl;
-    for (; it != B.end(); ++it)
+    ft::vector<int>::iterator it = A.begin();
+    if (B.rbegin() != A.rbegin())
+        cout << endl << A.size() << *A.rbegin() << endl;
+    for (; it != A.end(); ++it)
     {
         cout << *it << " ";
     }
@@ -110,13 +112,45 @@ void ft_swap()
 
 }
 
+void ft_assign()
+{
+    {
+    ft::vector<char> v;
+    
+    v.assign(0, 'c');
+    for (size_t i = 0; i < v.size(); i++)
+        std::cout << v[i];
+    v.assign(64, 'A');
+    for (size_t i = 0; i < v.size(); i++)
+        std::cout << v[i];
+    v.assign(32, '5');
+    for (size_t i = 0; i < v.size(); i++)
+        std::cout << v[i];
+    v.assign(49, '8');
+    for (size_t i = 0; i < v.size(); i++)
+        std::cout << v[i];
+    v.assign(77, '2');
+    for (size_t i = 0; i < v.size(); i++)
+        std::cout << v[i];
+    std::cout << v.capacity() << '\n';
+    }
+    {
+        ft::vector<std::string> v;
+        v.assign(0, "");
+         v.assign(64, "vector-string");
+    }
+
+}
+
 int main()
 {
     // ft_tests();
     // inputf();
     // ft_resize();
-    ft_swap();
-    // system("leaks ftcontainers");
+    // ft_swap();
+    ft_assign();
+
+    system("leaks ftcontainers");
 
     return(0);
 }

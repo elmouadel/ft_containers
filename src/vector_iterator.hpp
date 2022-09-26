@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:24:14 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/22 12:01:59 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/26 09:48:02 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ namespace ft
         public:
             v_iterator() {}
             v_iterator(const pointer &_p_i) : p_i(_p_i) {}
-            v_iterator(const v_iterator &rhs) : p_i(rhs.p_i) {}
+            // v_iterator(const v_iterator &rhs) : p_i(rhs.p_i) {}
             template<class _Iter>
             v_iterator(const v_iterator<_Iter> &rhs, 
                 typename std::enable_if<std::is_convertible<_Iter, iterator_type>::value>::type * = nullptr)
-                : p_i(rhs.base()){}
+                : p_i(rhs.base()) {}
             
             iterator_type base() const throw() 
             {

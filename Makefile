@@ -6,7 +6,7 @@
 #    By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/15 08:46:38 by eabdelha          #+#    #+#              #
-#    Updated: 2022/09/22 09:54:18 by eabdelha         ###   ########.fr        #
+#    Updated: 2022/09/25 12:00:50 by eabdelha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ OBJ_PATH = ./obj/
 
 SRC_INCLUDES =	$(SRC_PATH)vector.hpp				\
 				$(SRC_PATH)vector_iterator.hpp		\
-				$(SRC_PATH)iterator_traits.hpp	
+				$(SRC_PATH)iterator_traits.hpp		\
+				$(SRC_PATH)reverse_iterator.hpp
 
 FT_TESTS	=	ft_main.cpp
 
