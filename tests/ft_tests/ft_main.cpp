@@ -2,7 +2,6 @@
 #include <fstream>
 #include "../../doc/__wrap_iter.hpp"
 #include "../../doc/cluv.hpp"
-#include "../../src/vector_iterator.hpp"
 // #include <vector>
 #include <map>
 #include "../../src/vector.hpp"
@@ -139,7 +138,23 @@ void ft_assign()
         v.assign(0, "");
          v.assign(64, "vector-string");
     }
+}
 
+void ft_pair()
+{
+
+    ft::vector<ft::pair<int, int> > D;
+    D.push_back(ft::pair<int, int>(-1, -2));
+    D.push_back(ft::pair<int, int>(-3, -4));
+    D.push_back(ft::pair<int, int>(-6, -7));
+    D.push_back(ft::pair<int, int>(-8, -9));
+
+    ft::vector<ft::pair<int, int> >::iterator it = D.begin();
+    for (; it != D.end(); ++it)
+    {
+        cout << it->second << " ";
+    }
+    std::cout << '\n';
 }
 
 int main()
@@ -148,9 +163,10 @@ int main()
     // inputf();
     // ft_resize();
     // ft_swap();
-    ft_assign();
+    // ft_assign();
+    ft_pair();
 
-    system("leaks ftcontainers");
+    // system("leaks ftcontainers");
 
     return(0);
 }

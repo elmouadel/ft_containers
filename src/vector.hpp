@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/26 16:49:11 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:14:35 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 #define VECTOR_HPP
 
 #include <memory>
-// #include <limits>
-// #include <climits>
-// #include <cstring>
-#include <algorithm>
 #include <stdexcept>
+#include <algorithm>
 #include <type_traits>
-#include "vector_iterator.hpp"
-#include "reverse_iterator.hpp"
-
+#include "./vector_utils/iterator_traits.hpp"
+#include "./vector_utils/vector_iterator.hpp"
+#include "./vector_utils/allocator_traits.hpp"
+#include "./vector_utils/reverse_iterator.hpp"
+#include "./vector_utils/vector_utils.hpp"
+#include "./vector_utils/algorithm.hpp"
 
 namespace ft
 {
@@ -37,7 +37,7 @@ namespace ft
         protected:
             typedef _Tp                                             value_type;
             typedef _Allocator                                      allocator_type;
-            typedef typename std::allocator_traits<allocator_type>  alloc_traits;
+            typedef typename ft::allocator_traits<allocator_type>   alloc_traits;
             typedef typename alloc_traits::size_type                size_type;
             typedef typename alloc_traits::difference_type          difference_type;
             typedef typename alloc_traits::pointer                  pointer;
@@ -115,21 +115,21 @@ namespace ft
         _vector_base<Tp, Allocator> _base;
         
         public:
-            typedef Tp                                               value_type;
+            typedef Tp                                              value_type;
             typedef value_type                                      &reference;
             typedef const value_type                                &const_reference;
             typedef Allocator                                       allocator_type;
-            typedef typename std::allocator_traits<allocator_type>  alloc_traits;
+            typedef typename ft::allocator_traits<allocator_type>   alloc_traits;
             typedef typename alloc_traits::size_type                size_type;
             typedef typename alloc_traits::difference_type          difference_type;
             typedef typename alloc_traits::pointer                  pointer;
             typedef typename alloc_traits::const_pointer            const_pointer;
             typedef v_iterator<pointer>                             iterator;
             typedef v_iterator<const_pointer>                       const_iterator;
-            typedef ft::reverse_iterator<iterator>                      reverse_iterator;
-            typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
+            typedef ft::reverse_iterator<iterator>                  reverse_iterator;
+            typedef ft::reverse_iterator<const_iterator>            const_reverse_iterator;
 
-            _Static_assert((std::is_same<typename allocator_type::value_type, value_type>::value), 
+            _Static_assert((ft::is_same<typename allocator_type::value_type, value_type>::value), 
             "Allocator::value_type must be same type as value_type");
             
 /* ************************************************************************** */
@@ -150,10 +150,8 @@ namespace ft
             }
             template <class _InputIterator>
             vector (_InputIterator _first, _InputIterator _last, const allocator_type& _a = allocator_type(),
-                typename std::enable_if<std::__is_input_iterator<_InputIterator>::value &&
-                !std::__is_forward_iterator<_InputIterator>::value &&
-                std::is_constructible<value_type, 
-                typename std::iterator_traits<_InputIterator>::reference>::value>::type* = 0) :
+                typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value && 
+                !ft::is_forward_iterator<_InputIterator>::value>::type* = 0) :
                     _base(_a)
             {
                 for (; _first != _last; ++_first)
@@ -161,16 +159,14 @@ namespace ft
             }
             template <class _ForwardIterator>
             vector (_ForwardIterator _first, _ForwardIterator _last, const allocator_type& _a = allocator_type(),
-                typename std::enable_if<std::__is_forward_iterator<_ForwardIterator>::value &&
-                std::is_constructible<value_type, 
-                typename std::iterator_traits<_ForwardIterator>::reference>::value>::type* = 0) :
+                typename ft::enable_if<ft::is_forward_iterator<_ForwardIterator>::value>::type* = 0) :
                     _base(_a)
             {
-                size_type _n = static_cast<size_type>(_last -_first);
+                size_type _n = static_cast<size_type>(ft::distance(_first, _last));
                 if (_n > 0)
                 {
                     _vallocate(_n);
-                    alloc_traits::__construct_range_forward(_base._alloc, _first, _last, _base._end);
+                    alloc_traits::construct_range_forward(_base._alloc, _first, _last, _base._end);
                 }
             }
             vector(const vector &_v) :
@@ -180,7 +176,7 @@ namespace ft
                 if (_n > 0)
                 {
                     _vallocate(_n);
-                    alloc_traits::__construct_range_forward(_base._alloc, _v._base._begin, _v._base._end, _base._end);
+                    alloc_traits::construct_range_forward(_base._alloc, _v._base._begin, _v._base._end, _base._end);
                 }
             }
             vector(const vector &_v, const allocator_type &_a) :
@@ -190,7 +186,7 @@ namespace ft
                 if (_n > 0)
                 {
                     _vallocate(_n);
-                    alloc_traits::__construct_range_forward(_base._alloc, _v._base._begin, _v._base._end, _base._end);
+                    alloc_traits::construct_range_forward(_base._alloc, _v._base._begin, _v._base._end, _base._end);
                 }
             }
             ~vector()
@@ -203,16 +199,12 @@ namespace ft
             void assign(size_type _n, const_reference _val);
             
             template <class _InputIterator>
-                typename std::enable_if<std::__is_input_iterator<_InputIterator>::value &&
-                !std::__is_forward_iterator<_InputIterator>::value &&
-                std::is_constructible<Tp, 
-                typename std::iterator_traits<_InputIterator>::reference>::value, void>::type
+                typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value &&
+                !ft::is_forward_iterator<_InputIterator>::value, void>::type
             assign(_InputIterator _first, _InputIterator _last);
 
             template <class _ForwardIterator>    
-                typename std::enable_if<std::__is_forward_iterator<_ForwardIterator>::value &&
-                std::is_constructible<Tp, 
-                typename std::iterator_traits<_ForwardIterator>::reference>::value, void>::type
+                typename ft::enable_if<ft::is_forward_iterator<_ForwardIterator>::value, void>::type
             assign(_ForwardIterator _first, _ForwardIterator _last);
             
 /* ************************************************************************** */
@@ -364,7 +356,7 @@ namespace ft
                 return (_base._begin);
             }
 /* ************************************************************************** */
-                            // manip functions :(in)
+                            // Modifiers functions :(in)
 /* ************************************************************************** */
             void push_back(const_reference _val)
             {
@@ -384,69 +376,29 @@ namespace ft
             iterator insert(const_iterator _pos, size_type _n, const_reference _val);
             
             template <class _InputIter>
-            typename std::enable_if<
-                    std::__is_input_iterator<_InputIter>::value && 
-                    !std::__is_forward_iterator<_InputIter>::value && 
-                    std::is_constructible<Tp, typename std::iterator_traits<_InputIter>::reference>::value,
-                    typename vector<Tp, Allocator>::iterator
-            >::type insert(const_iterator _pos, _InputIter _first, _InputIter _last);
+            typename ft::enable_if<
+                    ft::is_input_iterator<_InputIter>::value && 
+                    !ft::is_forward_iterator<_InputIter>::value, 
+                    typename vector<Tp, Allocator>::iterator>::type 
+            insert(const_iterator _pos, _InputIter _first, _InputIter _last);
             
             template <class _ForwardIter>
-            typename std::enable_if<
-                    std::__is_forward_iterator<_ForwardIter>::value && 
-                    std::is_constructible<Tp, typename std::iterator_traits<_ForwardIter>::reference>::value,
-                    typename vector<Tp, Allocator>::iterator
-            >::type insert(const_iterator _pos, _ForwardIter _first, _ForwardIter _last);
+            typename ft::enable_if<
+                    ft::is_forward_iterator<_ForwardIter>::value, 
+                    typename vector<Tp, Allocator>::iterator>::type 
+            insert(const_iterator _pos, _ForwardIter _first, _ForwardIter _last);
 
             iterator erase(const_iterator _pos);
             iterator erase(const_iterator _first, const_iterator _last);
             void clear() throw() {_base.clear(); }
-            void resize(size_type _size)
-            {
-                size_type _hol_size = size();
-                size_type _n = _size - _hol_size;
-                if (_size < _hol_size)
-                    _base._destruct_at_end(_base._begin + _size);
-                else if (_size > _hol_size)
-                {
-                    if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
-                        _construct_at_end(_n);
-                    else
-                    {
-                        tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
-                        for (; _n; --_n, ++_v._tmp._end)
-                            alloc_traits::construct(_base._alloc, _v._tmp._end);
-                        _swap_out_circular_buffer(_v);
-                    }    
-                }
-            }
-            void resize(size_type _size, const_reference _val)
-            {
-                size_type _hol_size = size();
-                size_type _n = _size - _hol_size;
-                if (_size < _hol_size)
-                    _base._destruct_at_end(_base._begin + _size);
-                else if (_size > _hol_size)
-                {
-                    if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
-                        _construct_at_end(_n, _val);
-                    else
-                    {
-                        tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
-                        for (; _n; --_n, ++_v._tmp._end)
-                            alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
-                        _swap_out_circular_buffer(_v);
-                    }    
-                }
-            }
+            void resize(size_type _size);
+            void resize(size_type _size, const_reference _val);
             void swap(vector &_v)
             {
                 std::swap(_base._begin, _v._base._begin);
                 std::swap(_base._end, _v._base._end);
                 std::swap(_base._end_l, _v._base._end_l);
             }
-
-
 /* ************************************************************************** */
                             // private struct :(in)
 /* ************************************************************************** */
@@ -482,7 +434,6 @@ namespace ft
             void _move_range(pointer _from_s, pointer _from_e, pointer _new_s);
         
     };
-    
 /* ************************************************************************** */
 /* ************************************************************************** */
                             // functions def(out)
@@ -541,7 +492,7 @@ namespace ft
     template <class _Tp, class _Allocator>
     void vector<_Tp, _Allocator>::_swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v)
     {
-        alloc_traits::__construct_backward(_base._alloc, _base._begin, _base._end, _v._tmp._begin);
+        alloc_traits::construct_backward(_base._alloc, _base._begin, _base._end, _v._tmp._begin);
         std::swap(_base._begin, _v._tmp._begin);
         std::swap(_base._end, _v._tmp._end);
         std::swap(_base._end_l, _v._tmp._end_l);
@@ -551,8 +502,8 @@ namespace ft
     vector<_Tp, _Allocator>::_swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v, pointer _p)
     {
         pointer _r = _v._tmp._begin;
-        alloc_traits::__construct_backward(_base._alloc, _base._begin, _p, _v._tmp._begin);
-        alloc_traits::__construct_forward(_base._alloc, _p, _base._end, _v._tmp._end);
+        alloc_traits::construct_backward(_base._alloc, _base._begin, _p, _v._tmp._begin);
+        alloc_traits::construct_forward(_base._alloc, _p, _base._end, _v._tmp._end);
         std::swap(_base._begin, _v._tmp._begin);
         std::swap(_base._end, _v._tmp._end);
         std::swap(_base._end_l, _v._tmp._end_l);
@@ -566,7 +517,7 @@ namespace ft
         
         for (pointer _i = _from_s + _n; _i < _from_e; ++_i, ++_base._end)
             alloc_traits::construct(_base._alloc, _base._end, *_i);
-        std::move_backward(_from_s, _from_s + _n, _end_hol);
+        ft::move_backward(_from_s, _from_s + _n, _end_hol);
     }
 /* ************************************************************************** */
                                 // assignment :(out)
@@ -580,10 +531,8 @@ namespace ft
     }
     template <class _Tp, class _Allocator>
     template <class _InputIterator>
-        typename std::enable_if<std::__is_input_iterator<_InputIterator>::value &&
-        !std::__is_forward_iterator<_InputIterator>::value &&
-        std::is_constructible<_Tp, 
-        typename std::iterator_traits<_InputIterator>::reference>::value, void>::type
+        typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value &&
+        !ft::is_forward_iterator<_InputIterator>::value, void>::type
     vector<_Tp, _Allocator>::assign(_InputIterator _first, _InputIterator _last)
     {
         _base.clear();
@@ -592,23 +541,21 @@ namespace ft
     }
     template <class _Tp, class _Allocator>
     template <class _ForwardIterator>
-        typename std::enable_if<std::__is_forward_iterator<_ForwardIterator>::value &&
-        std::is_constructible<_Tp, 
-        typename std::iterator_traits<_ForwardIterator>::reference>::value, void>::type
+        typename ft::enable_if<ft::is_forward_iterator<_ForwardIterator>::value, void>::type
     vector<_Tp, _Allocator>::assign(_ForwardIterator _first, _ForwardIterator _last)
     {
-         size_type _new_size = static_cast<size_type>(std::distance(_first, _last));
+         size_type _new_size = static_cast<size_type>(ft::distance(_first, _last));
          if (_new_size <= capacity())
          {
              _ForwardIterator _hol_p = _last;
              if (_new_size > size())
             {
                 _hol_p = _first;
-                std::advance(_hol_p, size());
+                ft::advance(_hol_p, size());
             }
             pointer _inter = std::copy(_first, _hol_p, _base._begin);
             if (_hol_p != _last)
-                alloc_traits::__construct_range_forward(_base._alloc, _hol_p, _last, _base._end);
+                alloc_traits::construct_range_forward(_base._alloc, _hol_p, _last, _base._end);
             else
                 _base._destruct_at_end(_inter);
          }
@@ -619,7 +566,7 @@ namespace ft
                 alloc_traits::deallocate(_base._alloc, _base._begin, capacity());
             _base._begin = _base._end = _base._end_l = nullptr;
             _vallocate(_recommend(_new_size));
-            alloc_traits::__construct_range_forward(_base._alloc, _first, _last, _base._end);
+            alloc_traits::construct_range_forward(_base._alloc, _first, _last, _base._end);
         }
     }
     template <class _Tp, class _Allocator>
@@ -645,7 +592,7 @@ namespace ft
         }
     }
 /* ************************************************************************** */
-                            // manip functions :(in)
+                            // Modifiers functions :(in)
 /* ************************************************************************** */
     template <class _Tp, class _Allocator>
     typename vector<_Tp, _Allocator>::iterator
@@ -715,10 +662,9 @@ namespace ft
     }
     template <class _Tp, class _Allocator>
     template <class _InputIter>
-    typename std::enable_if<
-                std::__is_input_iterator<_InputIter>::value && 
-                !std::__is_forward_iterator<_InputIter>::value && 
-                std::is_constructible<_Tp, typename std::iterator_traits<_InputIter>::reference>::value, 
+    typename ft::enable_if<
+                ft::is_input_iterator<_InputIter>::value && 
+                !ft::is_forward_iterator<_InputIter>::value, 
                 typename vector<_Tp, _Allocator>::iterator
             >::type vector<_Tp, _Allocator>::insert(const_iterator _pos, _InputIter _first, _InputIter _last)
     {
@@ -729,14 +675,13 @@ namespace ft
     }
     template <class _Tp, class _Allocator>
     template <class _ForwardIter>
-            typename std::enable_if<
-                std::__is_forward_iterator<_ForwardIter>::value && 
-                std::is_constructible<_Tp, typename std::iterator_traits<_ForwardIter>::reference>::value,
+            typename ft::enable_if<
+                ft::is_forward_iterator<_ForwardIter>::value, 
                 typename vector<_Tp, _Allocator>::iterator
             >::type vector<_Tp, _Allocator>::insert(const_iterator _pos, _ForwardIter _first, _ForwardIter _last)
     {
         pointer         _p = _base._begin + (_pos - begin());
-        difference_type _n = std::distance(_first, _last);
+        difference_type _n = ft::distance(_first, _last);
         if (_n <= 0)
             return (_make_iter(_p));
         if (_n <= _base._end_l - _base._end)
@@ -744,12 +689,13 @@ namespace ft
             _ForwardIter    _iter_hol = _last;
             pointer         _end_hol = _base._end;
             size_type       _n_hol = _n;
+            
             if (_n > _base._end - _p)
             {
                 _n = _base._end - _p;
                 _iter_hol = _first;
-                std::advance(_iter_hol, _n);
-                alloc_traits::__construct_range_forward(_base._alloc, _iter_hol, _last, _base._end);
+                ft::advance(_iter_hol, _n);
+                alloc_traits::construct_range_forward(_base._alloc, _iter_hol, _last, _base._end);
             }
             if (_n > 0)
             {
@@ -797,9 +743,49 @@ namespace ft
             alloc_traits::destroy(_base._alloc, _base._end - 1);
         return (_ret);
     }
+    template <class _Tp, class _Allocator>
+    void vector<_Tp, _Allocator>::resize(size_type _size)
+    {
+        size_type _hol_size = size();
+        size_type _n = _size - _hol_size;
+        if (_size < _hol_size)
+            _base._destruct_at_end(_base._begin + _size);
+        else if (_size > _hol_size)
+        {
+            if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
+                _construct_at_end(_n);
+            else
+            {
+                tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
+                for (; _n; --_n, ++_v._tmp._end)
+                    alloc_traits::construct(_base._alloc, _v._tmp._end);
+                _swap_out_circular_buffer(_v);
+            }    
+        }
+    }
+    template <class _Tp, class _Allocator>
+    void vector<_Tp, _Allocator>::resize(size_type _size, const_reference _val)
+    {
+        size_type _hol_size = size();
+        size_type _n = _size - _hol_size;
+        if (_size < _hol_size)
+            _base._destruct_at_end(_base._begin + _size);
+        else if (_size > _hol_size)
+        {
+            if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
+                _construct_at_end(_n, _val);
+            else
+            {
+                tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
+                for (; _n; --_n, ++_v._tmp._end)
+                    alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
+                _swap_out_circular_buffer(_v);
+            }    
+        }
+    }
 
 /* ************************************************************************** */
-                            // overload functions :(out)
+                            // friend functions :(out)
 /* ************************************************************************** */
     template <class _Tp, class _Allocator>
     inline void
@@ -807,12 +793,13 @@ namespace ft
     {
         _rhs.swap(_lhs);
     }
+    
     template <class _Tp, class _Allocator>
     inline bool
     operator==(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
-        const typename vector<_Tp, _Allocator>::size_type __sz = _lhs.size();
-        return __sz == _rhs.size() && std::__1::equal(_lhs.begin(), _lhs.end(), _rhs.begin());
+        const typename vector<_Tp, _Allocator>::size_type _size = _lhs.size();
+        return _size == _rhs.size() && ft::equal(_lhs.begin(), _lhs.end(), _rhs.begin());
     }
 
     template <class _Tp, class _Allocator>
@@ -826,7 +813,7 @@ namespace ft
     inline bool
     operator<(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
-        return std::__1::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end());
+        return ft::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end());
     }
 
     template <class _Tp, class _Allocator>

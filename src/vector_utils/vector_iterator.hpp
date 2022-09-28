@@ -6,14 +6,12 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:24:14 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/26 09:48:02 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:10:03 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_ITERATOR_HPP
 #define VECTOR_ITERATOR_HPP
-
-#include "iterator_traits.hpp"
 
 namespace ft
 {
@@ -132,6 +130,5 @@ namespace ft
             }  
     };
 }
-
 
 #endif

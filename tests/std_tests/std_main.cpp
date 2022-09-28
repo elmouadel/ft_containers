@@ -31,6 +31,9 @@ void std_tests()
     std::cout << std::endl << B.max_size() << std::endl;
 
     std::vector<int> A(B.begin(), B.end());
+    B.erase(B.end() - 1);
+    if (A == B)
+        std::cout << "\nvector equal\n";
 
     std::vector<int>::iterator it = A.begin();
     std::cout << std::endl << /*A.size()<< */*(A.rend()-1) << std::endl;
@@ -140,13 +143,33 @@ void ft_assign()
 
 }
 
+void ft_pair()
+{
+
+    std::vector<std::pair<int, int> > D;
+    D.push_back(std::pair<int, int>(-1, -2));
+    D.push_back(std::pair<int, int>(-3, -4));
+    D.push_back(std::pair<int, int>(-6, -7));
+    D.push_back(std::pair<int, int>(-8, -9));
+
+    std::vector<std::pair<int, int> >::iterator it = D.begin();
+    for (; it != D.end(); ++it)
+    {
+        std::cout << it->second << " ";
+    }
+    std::cout << '\n';
+}
+
 int main()
 {
     // std_tests();
     // inputf();
     // ft_resize();
     // ft_swap();
-    ft_assign();
+    // ft_assign();
+    ft_pair();
+
+
     // system("leaks stdcontainers");
 
     return(0);
