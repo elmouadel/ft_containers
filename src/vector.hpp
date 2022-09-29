@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/28 13:14:35 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/09/29 12:00:17 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 #define VECTOR_HPP
 
 #include <memory>
+#include <iterator>
 #include <stdexcept>
 #include <algorithm>
 #include <type_traits>
-#include "./vector_utils/iterator_traits.hpp"
-#include "./vector_utils/vector_iterator.hpp"
-#include "./vector_utils/allocator_traits.hpp"
-#include "./vector_utils/reverse_iterator.hpp"
-#include "./vector_utils/vector_utils.hpp"
-#include "./vector_utils/algorithm.hpp"
+#include "pair.hpp"
+#include "./utils/iterator_traits.hpp"
+#include "./utils/vector_iterator.hpp"
+#include "./utils/allocator_traits.hpp"
+#include "./utils/reverse_iterator.hpp"
+#include "./utils/vector_utils.hpp"
+#include "./utils/algorithm.hpp"
 
 namespace ft
 {
@@ -206,14 +208,15 @@ namespace ft
             template <class _ForwardIterator>    
                 typename ft::enable_if<ft::is_forward_iterator<_ForwardIterator>::value, void>::type
             assign(_ForwardIterator _first, _ForwardIterator _last);
-            
-/* ************************************************************************** */
-                                // iterators :(in)
+           
 /* ************************************************************************** */
             allocator_type get_allocator() const throw()
             {
                 return (_base._alloc);
             }
+/* ************************************************************************** */
+                                // iterators :(in)
+/* ************************************************************************** */
             iterator _make_iter(pointer _p) const throw()
             {
                 return (iterator(_p));
@@ -256,26 +259,9 @@ namespace ft
             {
                 return const_reverse_iterator(begin());
             }
+
 /* ************************************************************************** */
-                            // const iterators 2 :(in)
-            const_iterator cbegin() const throw()
-            {
-                return begin();
-            }
-            const_iterator cend() const throw()
-            {
-                return end();
-            }
-            const_reverse_iterator crbegin() const throw()
-            {
-                return rbegin();
-            }
-            const_reverse_iterator crend() const throw()
-            {
-                return rend();
-            }
-/* ************************************************************************** */
-                            // size functions :(in)
+                            // Capacity functions :(in)
 /* ************************************************************************** */
             size_type size() const throw()
             {
@@ -305,7 +291,7 @@ namespace ft
                 }
             }
 /* ************************************************************************** */
-                            // indexing functions :(in)
+                            // accessing functions :(in)
 /* ************************************************************************** */
             reference operator[](size_type _n) 
             {

@@ -6,7 +6,7 @@
 #    By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/15 08:46:38 by eabdelha          #+#    #+#              #
-#    Updated: 2022/09/28 13:17:23 by eabdelha         ###   ########.fr        #
+#    Updated: 2022/09/28 15:52:51 by eabdelha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,17 +19,18 @@ FT_NAME = ftcontainers
 STD_NAME = stdcontainers
 
 SRC_PATH = ./src/
-VEC_UTLS_PATH = ./src/vector_utils/
+UTLS_PATH = ./src/utils/
 FT_TESTS_PATH = ./tests/ft_tests/
 STD_TESTS_PATH = ./tests/std_tests/
 OBJ_PATH = ./obj/
 
-SRC_INCLUDES =	$(SRC_PATH)vector.hpp				\
-				$(VEC_UTLS_PATH)algorithm.hpp			\
-				$(VEC_UTLS_PATH)vector_utils.hpp		\
-				$(VEC_UTLS_PATH)vector_iterator.hpp		\
-				$(VEC_UTLS_PATH)iterator_traits.hpp		\
-				$(VEC_UTLS_PATH)reverse_iterator.hpp	\
+SRC_INCLUDES =	$(SRC_PATH)vector.hpp			\
+				$(SRC_PATH)pair.hpp				\
+				$(UTLS_PATH)algorithm.hpp			\
+				$(UTLS_PATH)vector_utils.hpp		\
+				$(UTLS_PATH)vector_iterator.hpp		\
+				$(UTLS_PATH)iterator_traits.hpp		\
+				$(UTLS_PATH)reverse_iterator.hpp	\
 
 FT_TESTS	=	ft_main.cpp
 
