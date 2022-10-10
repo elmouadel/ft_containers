@@ -557,7 +557,7 @@ template <class _Tp>
 struct __extract_key_value_types;
 
 template <class _Key, class _Tp>
-struct __extract_key_value_types<__value_type<_Key, _Tp>>
+struct __extract_key_value_types<__value_type<_Key, _Tp> >
 {
     typedef _Key const __key_type;
     typedef _Tp __mapped_type;
@@ -704,7 +704,7 @@ public:
 };
 
 template <class _Key, class _Tp, class _Compare = less<_Key>,
-          class _Allocator = allocator<pair<const _Key, _Tp>>>
+          class _Allocator = allocator<pair<const _Key, _Tp> > >
 class map
 {
 public:
@@ -737,13 +737,12 @@ public:
     };
 
 private:
-    typedef std::__1::__value_type<key_type, mapped_type> __value_type;
-    typedef __map_value_compare<key_type, __value_type, key_compare> __vc;
-    typedef typename __rebind_alloc_helper<allocator_traits<allocator_type>,
-                                           __value_type>::type __allocator_type;
-    typedef __tree<__value_type, __vc, __allocator_type> __base;
-    typedef typename __base::__node_traits __node_traits;
-    typedef allocator_traits<allocator_type> __alloc_traits;
+    typedef std::__1::__value_type<key_type, mapped_type>                                           __value_type;
+    typedef __map_value_compare<key_type, __value_type, key_compare>                                __vc;
+    typedef typename __rebind_alloc_helper<allocator_traits<allocator_type>, __value_type>::type    __allocator_type;
+    typedef __tree<__value_type, __vc, __allocator_type>                                            __base;
+    typedef typename __base::__node_traits                                                          __node_traits;
+    typedef allocator_traits<allocator_type>                                                        __alloc_traits;
 
     __base __tree_;
 
@@ -1076,6 +1075,34 @@ swap(map<_Key, _Tp, _Compare, _Allocator> &__x,
 {
     __x.swap(__y);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 template <class _Key, class _Tp, class _Compare = less<_Key>,
           class _Allocator = allocator<pair<const _Key, _Tp>>>
 class multimap

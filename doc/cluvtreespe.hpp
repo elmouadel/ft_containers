@@ -434,7 +434,7 @@ struct __tree_key_value_types
 };
 
 template <class _Key, class _Tp>
-struct __tree_key_value_types<__value_type<_Key, _Tp>>
+struct __tree_key_value_types<__value_type<_Key, _Tp> >
 {
     typedef _Key key_type;
     typedef _Tp mapped_type;
@@ -521,7 +521,7 @@ template <class _NodePtr, class _NodeT = typename pointer_traits<_NodePtr>::elem
 struct __tree_node_types;
 
 template <class _NodePtr, class _Tp, class _VoidPtr>
-struct __tree_node_types<_NodePtr, __tree_node<_Tp, _VoidPtr>>
+struct __tree_node_types<_NodePtr, __tree_node<_Tp, _VoidPtr> >
     : public __tree_node_base_types<_VoidPtr>,
       __tree_key_value_types<_Tp>,
       __tree_map_pointer_types<_Tp, _VoidPtr>

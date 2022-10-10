@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/29 12:00:17 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/10 18:28:40 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define VECTOR_HPP
 
 #include <memory>
+#include <vector>
 #include <iterator>
 #include <stdexcept>
 #include <algorithm>
@@ -23,7 +24,7 @@
 #include "./utils/vector_iterator.hpp"
 #include "./utils/allocator_traits.hpp"
 #include "./utils/reverse_iterator.hpp"
-#include "./utils/vector_utils.hpp"
+#include "./utils/utility.hpp"
 #include "./utils/algorithm.hpp"
 
 namespace ft
@@ -217,7 +218,7 @@ namespace ft
 /* ************************************************************************** */
                                 // iterators :(in)
 /* ************************************************************************** */
-            iterator _make_iter(pointer _p) const throw()
+            iterator _make_iter(pointer _p)  throw()
             {
                 return (iterator(_p));
             }

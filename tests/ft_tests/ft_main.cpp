@@ -3,8 +3,8 @@
 // #include "../../doc/__wrap_iter.hpp"
 // #include "../../doc/cluv.hpp"
 #include <vector>
-// #include <map>
 #include "../../src/vector.hpp"
+#include "../../src/map.hpp"
 
 using namespace std;
 
@@ -157,6 +157,34 @@ using namespace std;
 //     std::cout << '\n';
 // }
 
+void test_map()
+{
+    ft::map<int, int> a;
+    a.insert(ft::pair<int, int>(6, 37));
+    a.insert(ft::pair<int, int>(4, 47));
+    a.insert(ft::pair<int, int>(9, 67));
+    a.insert(ft::pair<int, int>(5, 87));
+    a.insert(ft::pair<int, int>(7, 97));
+    a.insert(ft::pair<int, int>(0, 97));
+    a.insert(ft::pair<int, int>(10, 77));
+
+    (void)a.value_comp();
+ 
+    std::cout << a.equal_range(0).first->first << ' ' << a.equal_range(0).second->first << '\n';
+
+
+    // std::map<int, int> b;
+    // b.insert(std::pair<int, int>(6, 37));
+    // b.insert(std::pair<int, int>(4, 47));
+    // b.insert(std::pair<int, int>(9, 67));
+    // b.insert(std::pair<int, int>(5, 87));
+    // b.insert(std::pair<int, int>(7, 97));
+    // b.insert(std::pair<int, int>(0, 97));
+    // b.insert(std::pair<int, int>(10, 77));
+ 
+    // std::cout << a.equal_range(0).first->first << ' ' << a.equal_range(0).second->first << '\n';
+}
+
 int main()
 {
     // ft_tests();
@@ -165,17 +193,61 @@ int main()
     // ft_swap();
     // ft_assign();
     // ft_pair();
-    ft::vector<int> a;
-    ft::vector<int> b;
+    
+    // std::vector<int> a;
+    // a.push_back(13);
+    // std::vector<int>::iterator itt = a.begin();
+    // std::vector<int>::const_iterator it = itt;
+    // std::cout << it - itt << '\n';
+    // *itt = 0;
+    // (void)it;
+    // return 0;
+    // ft::map<int, int> a;
+    // a.insert(ft::pair<int, int>(6, 37));
+    // a.insert(ft::pair<int, int>(4, 47));
+    // a.insert(ft::pair<int, int>(9, 67));
+    // a.insert(ft::pair<int, int>(5, 87));
+    // a.insert(ft::pair<int, int>(7, 97));
+    // a.insert(ft::pair<int, int>(0, 97));
+    // a.insert(ft::pair<int, int>(10, 77));
 
-    a.push_back(4);
-    b.push_back(-4);
 
-    ft::swap(a, b);
+    // a.insert(ft::pair<int, int>(61, 37));
+    // a.insert(ft::pair<int, int>(41, 47));
+    // a.insert(ft::pair<int, int>(53, 57));
+    // a.insert(ft::pair<int, int>(11, 67));
+    // a.insert(ft::pair<int, int>(15, 87));
+    // a.insert(ft::pair<int, int>(31, 97));
+    // a.insert(ft::pair<int, int>(20, 77));
+    // a.insert(ft::pair<int, int>(13, 77));
+    // a.insert(ft::pair<int, int>(33, 77));
+    // a.insert(ft::pair<int, int>(14, 77));
 
-    std::cout << a[0] << '\n';
-    std::cout << b[0] << '\n';
+    // a.insert(ft::pair<int, int>(5, 87));
+    // a.insert(ft::pair<int, int>(12, 97));
+    // a.insert(ft::pair<int, int>(23, 77));
+    // a.insert(ft::pair<int, int>(3, 77));
+    // a.insert(ft::pair<int, int>(30, 77));
+    // a.insert(ft::pair<int, int>(1, 77));
 
+    // a.insert(ft::pair<int, int>(-5, 87));
+    // a.insert(ft::pair<int, int>(-12, 97));
+    // a.insert(ft::pair<int, int>(-23, 77));
+    // a.insert(ft::pair<int, int>(-3, 77));
+    // a.insert(ft::pair<int, int>(-30, 77));
+    // a.insert(ft::pair<int, int>(-1, 77));
+
+    
+    // b.clear();
+    // ft::map<int, int>::iterator it = b.begin();
+    // (void)it;
+
+    // for (; it != b.end(); it++)
+    //     std::cout << it->first << ' ' << it->second << '\n';
+
+    // a.print();
+  
+    // test_map();
 
     // system("leaks ftcontainers");
 
