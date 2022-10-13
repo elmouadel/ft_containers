@@ -185,6 +185,20 @@ void test_map()
     // std::cout << a.equal_range(0).first->first << ' ' << a.equal_range(0).second->first << '\n';
 }
 
+void test_delete()
+{
+    ft::map<int, int> a;
+    for (int i = 0; i < 19 ;i++)
+        a.insert(ft::pair<int, int>(i, 37));
+
+    a.print();
+
+    ft::map<int, int>::iterator it = a.find(16);
+    a.erase(it);
+    
+    a.print();
+}
+
 int main()
 {
     // ft_tests();
@@ -248,6 +262,7 @@ int main()
     // a.print();
   
     // test_map();
+    test_delete();
 
     // system("leaks ftcontainers");
 

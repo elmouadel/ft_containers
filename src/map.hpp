@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/10 19:11:13 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/13 15:22:01 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ namespace ft
                 key_compare comp;
                 value_compare(key_compare c) : comp(c) {}
             public:
-                key_compare key_comp() const { return (comp); }
                 bool operator()(const value_type &_lhs, const value_type &_rhs) const
                 {
                     return comp(_lhs.first, _rhs.first);
@@ -76,7 +75,7 @@ namespace ft
         public:
             void print(void)
             {
-                _tree.print_tree_2(_tree.root());
+                _tree.print_tree(_tree.root());
             }
 /* ************************************************************************** */
                             // Costructors :
@@ -106,7 +105,6 @@ namespace ft
                 {
                     _tree.clear();
                     _tree.value_comp() = _m._tree.value_comp();
-                    _tree._node_alloc() = _m._tree._node_alloc();
                     insert(_m.begin(), _m.end());
                 }
                 return *this;
@@ -117,9 +115,9 @@ namespace ft
 /* ************************************************************************** */
                             // Observers :
 /* ************************************************************************** */
-            key_compare key_comp() const { return _tree.value_comp().key_comp(); }
+            key_compare key_comp() const { return _tree.value_comp().comp; }
 
-            value_compare value_comp() const { return value_compare(_tree.value_comp().key_comp()); }
+            value_compare value_comp() const { return value_compare(_tree.value_comp().comp); }
 /* ************************************************************************** */
                             // Iterators :
 /* ************************************************************************** */
@@ -174,6 +172,14 @@ namespace ft
                     std::__throw_out_of_range("map::at:  key not found");
                 return (_pos->_value.second);
             }
+            const mapped_type &at(const key_type &_key) const
+            {
+                typename _base::node_ptr _pos = _tree.root();
+                
+                if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
+                    std::__throw_out_of_range("map::at:  key not found");
+                return (_pos->_value.second);
+            }
 
 /* ************************************************************************** */
                             // Modifiers :
@@ -199,6 +205,10 @@ namespace ft
                     //check exp _it = end()
                     _tree._insert_unique(_it.p_i, *_first);
                 }
+            }
+            void erase (iterator _pos)
+            {
+                return (_tree._erase(_pos.p_i));
             }
 
 /* ************************************************************************** */
@@ -258,8 +268,79 @@ namespace ft
                 _ret = _tree._equal_range(value_type(_key, mapped_type()));
                 return (pcici(const_iterator(_ret.first), const_iterator(_ret.second)));
             }
+/* ************************************************************************** */
+                            // Non-member functions :
+/* ************************************************************************** */
+            // template<typename _K1, typename _T1, typename _C1, typename _A1>
+            // friend bool
+            // operator==(const map<_K1, _T1, _C1, _A1>&,
+            // const map<_K1, _T1, _C1, _A1>&);
+            // template<typename _K1, typename _T1, typename _C1, typename _A1>
+            // friend bool
+            // operator!=(const map<_K1, _T1, _C1, _A1>&,
+            // const map<_K1, _T1, _C1, _A1>&);
+            // template<typename _K1, typename _T1, typename _C1, typename _A1>
+            // friend bool
+            // operator<(const map<_K1, _T1, _C1, _A1>&,
+            // const map<_K1, _T1, _C1, _A1>&);
+            // template<typename _K1, typename _T1, typename _C1, typename _A1>
+            // friend bool
+            // operator<=(const map<_K1, _T1, _C1, _A1>&,
+            // const map<_K1, _T1, _C1, _A1>&);
+            // template<typename _K1, typename _T1, typename _C1, typename _A1>
+            // friend bool
+            // operator>(const map<_K1, _T1, _C1, _A1>&,
+            // const map<_K1, _T1, _C1, _A1>&);
+            // template<typename _K1, typename _T1, typename _C1, typename _A1>
+            // friend bool
+            // operator>=(const map<_K1, _T1, _C1, _A1>&,
+            // const map<_K1, _T1, _C1, _A1>&);
 
     };
+    template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
+    bool operator==(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
+    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    {
+        return (_lhs.size() == _rhs.size() && ft::equal(_lhs.begin(), _lhs.end(), _rhs.begin()));
+    }
+    template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
+    bool operator<(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
+    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    {
+        return (ft::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end()));
+    }
+    template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
+    bool operator!=(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
+    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    {
+        return !(_lhs == _rhs);
+    }
+    template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
+    bool operator>(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
+    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    {
+        return (_rhs < _lhs);
+    }
+    template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
+    bool operator>=(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
+    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    {
+        return !(_lhs < _rhs);
+    }
+    template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
+    bool operator<=(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
+    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    {
+        return !(_rhs < _lhs);
+    }
+    template <class _Key, class _Tp, class _Compare, class _Alloc>
+    inline void
+    swap(map<_Key, _Tp, _Compare, _Alloc> &_lhs,
+         map<_Key, _Tp, _Compare, _Alloc> &_rhs)
+    
+    {
+        _lhs.swap(_rhs);
+    }
 }
 
 #endif

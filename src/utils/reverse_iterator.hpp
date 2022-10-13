@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 11:18:29 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/28 13:00:48 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/11 10:22:46 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ namespace ft
             pointer operator->() const
             {
                 Iter _tmp = current;
-                return ((--_tmp).base());
+                return &(*--_tmp);
             }
             reverse_iterator& operator++()
             {

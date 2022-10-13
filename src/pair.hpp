@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 15:07:03 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/28 15:09:08 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/11 09:38:15 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ namespace ft
     template <class _T1, class _T2>
     inline bool operator==(const pair<_T1, _T2>& _lhs, const pair<_T1, _T2>& _rhs)
     {
-        return (_lhs.first == _rhs.first && _lhs.second = _rhs.second);
+        return (_lhs.first == _rhs.first && _lhs.second == _rhs.second);
     }
     template <class _T1, class _T2>
     inline bool operator!=(const pair<_T1, _T2>& _lhs, const pair<_T1, _T2>& _rhs)

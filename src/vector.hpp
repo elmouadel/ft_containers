@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/10 18:28:40 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/11 09:32:32 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -785,8 +785,8 @@ namespace ft
     inline bool
     operator==(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
-        const typename vector<_Tp, _Allocator>::size_type _size = _lhs.size();
-        return _size == _rhs.size() && ft::equal(_lhs.begin(), _lhs.end(), _rhs.begin());
+        // const typename vector<_Tp, _Allocator>::size_type _size = _lhs.size();
+        return _lhs.size() == _rhs.size() && ft::equal(_lhs.begin(), _lhs.end(), _rhs.begin());
     }
 
     template <class _Tp, class _Allocator>

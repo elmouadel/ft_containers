@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/01 14:56:06 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/10 19:13:15 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/13 21:07:12 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 #include "./rb_tree_iterator.hpp"
 #include <cmath>
-#include <stdio.h>
+#include <__tree>
+#include <iostream>
 
 namespace ft
 {
@@ -102,7 +103,7 @@ namespace ft
     }
     
     template <class _N_ptr>
-    bool _sibling_is_red(_N_ptr _n)
+    bool _is_red_sibling(_N_ptr _n)
     {
         if (_tree_is_left_child(_n))
         {
@@ -121,7 +122,7 @@ namespace ft
         {
             if (_n->_parent->_color == _black_n)
                 return;
-            if (!_sibling_is_red(_n->_parent))
+            if (!_is_red_sibling(_n->_parent))
             {
                 if (_tree_is_left_child(_n->_parent))
                 {
@@ -153,7 +154,345 @@ namespace ft
             }
         }
     }
+    template <class _N_ptr>
+    void _swap_node(_N_ptr _n1, _N_ptr _n2)
+    {
+        if (_n1->_left)
+            _n1->_left->_parent = _n2;
+        if (_n1->_right)
+            _n1->_right->_parent = _n2;
+        if (_n2->_left)
+            _n2->_left->_parent = _n1;
+        if (_n2->_right)
+            _n2->_right->_parent = _n1;
+            
+        _N_ptr _tmp;
+    
+        if (_tree_is_left_child(_n1))
+            _n1->_parent->_left = _n2;
+        else
+            _n1->_parent->_right = _n2;
+            
+        if (_tree_is_left_child(_n2))
+            _n2->_parent->_left = _n1;
+        else
+            _n2->_parent->_right = _n1;
+
+        _tmp = _n1->_left;
+        _n1->_left = _n2->_left;
+        _n2->_left = _tmp; 
+        
+        _tmp = _n1->_right;
+        _n1->_right = _n2->_right;
+        _n2->_right = _tmp;
+        
+        _tmp = _n1->_parent;
+        _n1->_parent = _n2->_parent;
+        _n2->_parent = _tmp; 
+
+        bool _tmp_c;
+        
+        _tmp_c = _n1->_color;
+        _n1->_color = _n2->_color;
+        _n2->_color = (ft::rb_tree_color)_tmp_c;
+    }
+    template <class _N_ptr>
+    void _swap_related_nodes(_N_ptr _n1, _N_ptr _n2)
+    {
+        if (_tree_is_left_child(_n1))
+            _n1->_parent->_left = _n2;
+        else
+            _n1->_parent->_right = _n2;
+
+        if (_n1->_right && _n1->_right != _n2)
+            _n1->_right->_parent = _n2;
+        if (_n2->_right)
+            _n2->_right->_parent = _n1;
+        if (_n1->_left && _n1->_left != _n2)
+            _n1->_left->_parent = _n2;
+        if (_n2->_left)
+            _n2->_left->_parent = _n1;
+            
+        if (_tree_is_left_child(_n2))
+        {
+            std::swap(_n1->_right, _n2->_right);
+            _n1->_left = _n2->_left;
+            _n2->_left = _n1;
+        }
+        else
+        {
+            std::swap(_n1->_left, _n2->_left);
+            _n1->_right = _n2->_right;
+            _n2->_right = _n1;
+        }
+        _n2->_parent = _n1->_parent;
+        _n1->_parent = _n2;
+        
+        
+        bool _tmp_c;
+        
+        _tmp_c = _n1->_color;
+        _n1->_color = _n2->_color;
+        _n2->_color = (ft::rb_tree_color)_tmp_c;
+    }
+    
+    template <class _N_ptr>
+    bool _has_black_children(_N_ptr _n)
+    {
+        return ((!_n->_left || _n->_left->_color == _black_n) 
+        && (!_n->_right || _n->_right->_color == _black_n));
+    }
+
+    
+    // template <class _N_ptr>
+    // void _tree_delete_node(_N_ptr _root, _N_ptr _n)
+    // {
+    //     while (_n->_left || _n->_right)
+    //     {
+    //         _N_ptr _hol_n;
+            
+    //         if (_n->_right)
+    //             _hol_n = _tree_min(_n->_right);
+    //         else
+    //             _hol_n = _tree_max(_n->_left);
+    //         if (_hol_n->_parent != _n)
+    //             _swap_node(_n, _hol_n);
+    //         else
+    //             _swap_related_nodes(_n, _hol_n);
+    //             // return;
+    //     }
+    //     //case 2
+    //     if ((_n->_color == _red_n && !_n->_left && !_n->_right) || _n == _root)
+    //     {
+    //         if (_tree_is_left_child(_n))
+    //             _n->_parent->_left = nullptr;
+    //         else
+    //             _n->_parent->_right = nullptr;
+    //             // std::cout << "ok" << _n->_value.first << std::endl;
+    //         return;
+    //     }
+    //     _N_ptr _old_n = _n;
+    //     _N_ptr _hol_s;
+    //     while (!_n->_parent->_left || !_n->_parent->_right)
+    //         _n = _n->_parent;
+    //     if (_tree_is_left_child(_n))
+    //         _hol_s = _n->_parent->_right;
+    //     else
+    //         _hol_s = _n->_parent->_left;
+    //     while (_n->_color == _black_n)
+    //     {
+    //         if (_hol_s->_color == _black_n)
+    //         {
+    //             //case 3
+    //             if (_has_black_children(_hol_s))
+    //             {
+    //                 _hol_s->_color = _red_n;
+    //                 if (_hol_s->_parent->_color == _red_n)
+    //                 {
+    //                     _hol_s->_parent->_color = _black_n;
+    //                     break;
+    //                 }
+    //                 while (!_n->_parent->_left || !_n->_parent->_right)
+    //                     _n = _n->_parent;
+    //                 _n = _hol_s->_parent;
+    //                 if (_tree_is_left_child(_n))
+    //                     _hol_s = _n->_parent->_right;
+    //                 else
+    //                     _hol_s = _n->_parent->_left;
+    //                 // continue;
+    //             }
+    //             if (_n == _root)
+    //                 break;
+    //             _N_ptr _far_n = nullptr;
+    //             _N_ptr _near_n = nullptr;
+                
+    //             if (_tree_is_left_child(_n))
+    //             {
+    //                 _far_n = _hol_s->_right;
+    //                 _near_n = _hol_s->_left;
+    //             }
+    //             else
+    //             {
+    //                 _far_n = _hol_s->_left;
+    //                 _near_n = _hol_s->_right;
+    //             }
+                
+    //             // return;
+    //             //case 6
+    //             if (_far_n && _far_n->_color == _red_n)
+    //             {
+    //                 _hol_s->_color = _hol_s->_parent->_color;
+    //                 _hol_s->_parent->_color = _black_n;
+    //                 if (_far_n)
+    //                     _far_n->_color = _black_n;
+    //                 while (!_n->_parent->_left || !_n->_parent->_right)
+    //                     _n = _n->_parent;
+    //                 if (_tree_is_left_child(_hol_s))
+    //                     _right_rotate_tree(_hol_s);
+    //                 else
+    //                     _left_rotate_tree(_hol_s);
+    //                 break;
+    //             }
+    //             //case 5
+    //             else if (_near_n)
+    //             {
+    //                 if (_near_n)
+    //                     _near_n->_color = _black_n;
+    //                 _hol_s->_color = _red_n;
+    //                 if (_tree_is_left_child(_hol_s))
+    //                     _left_rotate_tree(_near_n);
+    //                 else
+    //                     _right_rotate_tree(_near_n);
+    //                 _hol_s = _near_n; 
+    //                 continue;
+    //             }
+    //     // return;
+    //         }
+    //         //*-*-*-*-*-*-*-*-*
+    //         //case 4
+    //         if (_hol_s->_color == _red_n)
+    //         {
+    //             _hol_s->_color = _black_n;
+    //             _hol_s->_parent->_color = _red_n;
+    //             while (!_n->_parent->_left || !_n->_parent->_right)
+    //                     _n = _n->_parent;
+    //             if (_tree_is_left_child(_hol_s))
+    //                 _right_rotate_tree(_hol_s);
+    //             else
+    //                 _left_rotate_tree(_hol_s);
+    //             if (_tree_is_left_child(_n) && _n->_parent->_right)
+    //                 _hol_s = _n->_parent->_right;
+    //             else
+    //                 _hol_s = _n->_parent->_left;
+    //         }
+    //         //*-*-*-*-*-*-*-*-*
+    //         //case 1
+    //         if (_n == _root)
+    //             break;
+    //         //*-*-*-*-*-*-*-*-*
+    //     }
+    //     if (_tree_is_left_child(_old_n))
+    //         _old_n->_parent->_left = nullptr;
+    //     else
+    //         _old_n->_parent->_right = nullptr;
+    // }
     //**************************
+    template <class _N_ptr>
+    void _get_leaf_node(_N_ptr _n)
+    {
+        _N_ptr _hol_n = _n;
+        
+        while (_n->_left || _n->_right)
+        {
+            if (_n->_right)
+                _hol_n = _tree_min(_n->_right);
+            else
+                _hol_n = _tree_max(_n->_left);
+            if (_hol_n->_parent != _n)
+                _swap_node(_n, _hol_n);
+            else
+                _swap_related_nodes(_n, _hol_n);
+        }
+        // std::cout << "*****************   " <<_hol_n->_value.first << std::endl;
+    } 
+    template <class _N_ptr>
+    void _assign_to_right_node(_N_ptr _n, _N_ptr _val)
+    {
+        if (_tree_is_left_child(_n))
+            _n->_parent->_left = _val;
+        else
+            _n->_parent->_right = _val;
+    }
+    template <class _N_ptr>
+    bool _is_leaf_red_node(_N_ptr _n)
+    {
+        if (_n->_color == _red_n && !_n->_left && !_n->_right)
+            return true;
+        return false;
+    }
+    template <class _N_ptr>
+    _N_ptr _get_node_sibling(_N_ptr &_n, _N_ptr _root)
+    {
+        while ((!_n->_parent->_left || !_n->_parent->_right) && _n != _root)
+            _n = _n->_parent;
+        if (_tree_is_left_child(_n))
+            return _n->_parent->_right;
+        else
+            return _n->_parent->_left;
+    }
+    template <class _N_ptr>
+    void _rotate_sibling(_N_ptr _n)
+    {
+        if (_tree_is_left_child(_n))
+            _right_rotate_tree(_n);
+        else
+            _left_rotate_tree(_n);
+    }
+
+
+    template <class _N_ptr>
+    void _tree_delete_node(_N_ptr _root, _N_ptr _n)
+    {
+        _get_leaf_node(_n);
+        if (_is_leaf_red_node(_n) || _n == _root)
+            return _assign_to_right_node(_n, (_N_ptr)nullptr);
+        
+        //remember the leaf node to assigne null to its parent
+        _N_ptr _old_n = _n;
+        //****************************************************
+        _N_ptr _s;
+        _s = _get_node_sibling(_n, _root);
+        while (_n->_color == _black_n)
+        {
+            if (_n == _root)
+                break;
+            if (_s->_color == _black_n)
+            {
+                if (_has_black_children(_s))
+                {
+                    _s->_color = _red_n;
+                    if (_s->_parent->_color == _red_n)
+                        { _s->_parent->_color = _black_n; break; }
+                    
+                    _n = _n->_parent;
+                    _s = _get_node_sibling(_n, _root);
+                    continue;
+                }
+                //get far and near nephews
+                _N_ptr _far_n = nullptr;
+                _N_ptr _near_n = nullptr;
+                if (_tree_is_left_child(_n))
+                { _far_n = _s->_right; _near_n = _s->_left; }
+                else
+                { _far_n = _s->_left; _near_n = _s->_right; }
+                //***********************
+                if (_far_n && _far_n->_color == _red_n)
+                {
+                    std::swap(_s->_color, _n->_parent->_color);
+                    _rotate_sibling(_s);
+                    _far_n->_color = _black_n;
+                    break;
+                }
+                else
+                {
+                    std::swap(_s->_color, _near_n->_color);
+                    _rotate_sibling(_near_n);
+                    _s = _near_n; 
+                }
+            }
+            else
+            {
+                std::swap(_s->_color, _n->_parent->_color);
+                _rotate_sibling(_s);
+                _s = _get_node_sibling(_n, _root);
+                continue;
+            }
+            
+        }
+        return _assign_to_right_node(_old_n, (_N_ptr)nullptr);
+        
+        
+    }
 
 
     template <class _Tp>
@@ -306,10 +645,10 @@ namespace ft
             return _end_node->_left; 
         }
         
-        // allocator_type alloc() const throw()
-        // {
-        //     return (_alloc);
-        // }
+        allocator_type alloc() const throw()
+        {
+            return (_alloc);
+        }
 
 /* ************************************************************************** */
                             // Modifiers :
@@ -346,7 +685,10 @@ namespace ft
                 _new_n = _construct_node(_val);
                 _insert_node_at(_parent_pos, _new_n, _is_left);
             }
-                
+            // if (_new_n->_value.first == 46)
+            //     _new_n->_color = _red_n;
+            // else
+            //     _new_n->_color = _black_n;
             return (pair<iterator, bool>(iterator(_new_n), _inserted));
         }
         iterator _insert_unique(node_ptr _hint, const value_type &_val)
@@ -365,11 +707,20 @@ namespace ft
             }
             return (iterator(_new_n));
         }
+        void _erase(node_ptr _pos)
+        {
+            if (_begin_node == _pos)
+                _begin_node = _tree_next(_pos);
+            _tree_delete_node(_end_node->_left, _pos);
+            // return;
+            _destruct_node(_pos);
+            --_size;
+        }
 /* ************************************************************************** */
                             // Lookup :
 /* ************************************************************************** */
     public:
-        node_ptr _lower_bound(const value_type &_val)
+        node_ptr _lower_bound(const value_type &_val) const
         {
             node_ptr _pos = root();
             node_ptr _ret = _end_node;
@@ -386,7 +737,7 @@ namespace ft
             }
             return (_ret);
         }
-        node_ptr _upper_bound(const value_type &_val)
+        node_ptr _upper_bound(const value_type &_val) const
         {
             node_ptr _pos = root();
             node_ptr _ret = _end_node;
@@ -403,7 +754,7 @@ namespace ft
             }
             return (_ret);
         }
-        pair<node_ptr, node_ptr> _equal_range(const value_type &_val)
+        pair<node_ptr, node_ptr> _equal_range(const value_type &_val) const
         {
             node_ptr _pos = root();
             node_ptr _ret = _end_node;
@@ -543,87 +894,88 @@ namespace ft
 //**********************************************************************************
 //**********************************************************************************
     public:
-        // void print_tree(node_ptr _root, int lvl = 0) const 
-        // {
-        //     if (_root == NULL)
-        //     {
-        //         padding('\t', lvl);
-        //         // std::cout << "~";
-        //     }
-        //     else
-        //     {
-        //         print_tree(_root->_left, lvl + 1);
-        //         padding('\t', lvl);
-        //         std::cout << _root->_value.first << ":" << _root->_value.second;
-
-        //         // if (_root->_parent)
-        //         //     std::cout << _root->_parent->_value.first;
-        //         // else
-        //         //     std::cout << "NULL";
-        //         std::cout << std::endl;
-        //         print_tree(_root->_right, lvl + 1);
-        //     }
-        //     std::cout << std::endl;
-        // }
-        // void padding(char c, int n) const
-        // {
-        //     for (int i = 0; i < n; i++)
-        //         std::cout << c;
-        // }
-        // void find_node_next(node_ptr root, int lvl, node_ptr *arr, size_t &indx)
-        // {
-        //     if (!root)
-        //     {
-        //         lvl = pow(2, lvl);
-        //         while (lvl-- > 0)
-        //             arr[indx++] = NULL;
-        //         return ;
-        //     }
-        //     if (lvl == 1)
-        //     {
-        //         arr[indx++] = root->_left;
-        //         arr[indx++] = root->_right;
-        //         return;
-        //     }
-        //     find_node_next(root->_left, lvl-1, arr, indx);
-        //     find_node_next(root->_right, lvl-1, arr, indx);
-        // }
-        // void print_tree_2(node_ptr _root)
-        // {
-        //     node_ptr arr[1000000];
-        //     size_t index = 1;
-        //     size_t height = 2 * log2(size());
+        void print_tree(node_ptr _root, int lvl = 0) const 
+        {
+            if (_root == NULL)
+            {
+                padding('\t', lvl);
+                // std::cout << "~";
+            }
+            else
+            {
+                print_tree(_root->_left, lvl + 1);
+                padding('\t', lvl*2);
+                if (_root->_color == _red_n)
+                    std::cout << "r";
+                std::cout << _root->_value.first /*<< ":" << _root->_value.second*/;
+                // if (_root->_parent)
+                //     std::cout << _root->_parent->_value.first;
+                // else
+                //     std::cout << "NULL";
+                std::cout << std::endl;
+                print_tree(_root->_right, lvl + 1);
+            }
+            std::cout << std::endl;
+        }
+        void padding(char c, int n) const
+        {
+            for (int i = 0; i < n; i++)
+                std::cout << c;
+        }
+        void find_node_next(node_ptr root, int lvl, node_ptr *arr, size_t &indx)
+        {
+            if (!root)
+            {
+                lvl = pow(2, lvl);
+                while (lvl-- > 0)
+                    arr[indx++] = NULL;
+                return ;
+            }
+            if (lvl == 1)
+            {
+                arr[indx++] = root->_left;
+                arr[indx++] = root->_right;
+                return;
+            }
+            find_node_next(root->_left, lvl-1, arr, indx);
+            find_node_next(root->_right, lvl-1, arr, indx);
+        }
+        void print_tree_2(node_ptr _root)
+        {
+            node_ptr arr[1000000];
+            size_t index = 1;
+            size_t height = 2 * log2(size());
             
-        //     arr[0] = _root;
-        //     for (size_t j = 0 ; j < height; j++)
-        //             find_node_next(_root, j + 1, arr, index);
-        //     size_t lvl = 1;
-        //     int pad = height * 16;
-        //     while (arr[--index] == NULL);
+            arr[0] = _root;
+            for (size_t j = 0 ; j < height; j++)
+                    find_node_next(_root, j + 1, arr, index);
+            size_t lvl = 1;
+            int pad = height * 16;
+            while (arr[--index] == NULL);
             
-        //     for (size_t i = 0; i <= index; i++)
-        //     {
-        //         if (i + 1 == lvl)
-        //         {                
-        //             std::cout << "\n\n\n";
-        //             lvl *= 2;
-        //             pad /= 2;
-        //         }
-        //         padding(' ', pad);
-        //         if (arr[i])
-        //         {
-        //             if (arr[i]->_color == _red_n)
-        //                 std::cout << "\e[0;31m";
-        //             std::cout << '(' << arr[i]->_value.first << ')' << "\e[0m";
-        //         }
-        //         else
-        //             std::cout << "  ";
-        //         padding(' ', pad);
-        //     }
-        //     std::cout << "\n\n\n";
-        //     (void)_root;
-        //     (void)arr;
-        // }
+            for (size_t i = 0; i <= index; i++)
+            {
+                if (i + 1 == lvl)
+                {                
+                    std::cout << "\n\n\n";
+                    lvl *= 2;
+                    pad /= 2;
+                }
+                padding(' ', pad);
+                if (arr[i])
+                {
+                    if (arr[i]->_color == _red_n)
+                        std::cout << "\e[0;31m";
+                    std::cout << '(' << arr[i]->_value.first << ')' << "\e[0m";
+                }
+                else
+                    std::cout << "  ";
+                padding(' ', pad);
+            }
+            std::cout << "\n\n\n";
+            (void)_root;
+            (void)arr;
+        }
 
     
     
