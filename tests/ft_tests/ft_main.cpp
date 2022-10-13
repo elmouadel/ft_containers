@@ -191,12 +191,14 @@ void test_delete()
     for (int i = 0; i < 19 ;i++)
         a.insert(ft::pair<int, int>(i, 37));
 
-    a.print();
+    // a.print();
 
-    ft::map<int, int>::iterator it = a.find(16);
-    a.erase(it);
+    // ft::map<int, int>::iterator it = a.find(16);
+    // a.erase(it);
     
-    a.print();
+    // a.print();
+    a.erase(a.begin(), a.end());
+    std::cout << a.size() << std::endl;
 }
 
 int main()

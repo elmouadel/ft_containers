@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector_utils.hpp                                   :+:      :+:    :+:   */
+/*   utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 18:13:22 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/28 15:07:46 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/13 23:47:39 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ namespace ft
     template<class InputIt1, class InputIt2>
     bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
     {
-        for (; (first1 != last1) && (first2 != last2); ++first1, (void) ++first2)
+        for (; (first1 != last1) && (first2 != last2); ++first1, /*(void)*/++first2)
         {
             if (*first1 < *first2)
                 return (true);

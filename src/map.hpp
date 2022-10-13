@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/13 15:22:01 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/14 00:13:49 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,6 +210,25 @@ namespace ft
             {
                 return (_tree._erase(_pos.p_i));
             }
+            size_type erase (const key_type &_key)
+            {
+                typename _base::node_ptr _pos = _tree.root();
+
+                if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
+                    return (0);
+                _tree._erase(_pos);
+                return (1);
+            }
+            void erase(iterator _first, iterator _last)
+            {
+                iterator _hol_i;
+                
+                while (_first != _last)
+                {
+                    _hol_i = _first++;
+                    _tree._erase(_hol_i.p_i);
+                }
+            }
 
 /* ************************************************************************** */
                             // Lookup :
@@ -227,7 +246,7 @@ namespace ft
                 typename _base::node_ptr _pos = _tree.root();
                 
                 if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
-                    return (const_iterator(_tree.root()->_parent));
+                    return (const_iterator(_tree.end_node()));
                 return (const_iterator(_pos));
             }
             size_type count(const key_type &_key)
@@ -298,46 +317,45 @@ namespace ft
 
     };
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator==(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
-    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    bool operator==(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+                    const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
-        return (_lhs.size() == _rhs.size() && ft::equal(_lhs.begin(), _lhs.end(), _rhs.begin()));
+        return (_lhs.size() == _rhs.size() && std::equal(_lhs.begin(), _lhs.end(), _rhs.begin()));
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator<(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
-    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    bool operator<(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+                    const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
-        return (ft::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end()));
+        return (std::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end()));
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator!=(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
-    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    bool operator!=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+                    const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return !(_lhs == _rhs);
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator>(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
-    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    bool operator>(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+                    const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return (_rhs < _lhs);
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator>=(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
-    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    bool operator>=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+                    const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return !(_lhs < _rhs);
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator<=(const map<_key, _Tp, _Compaire, _Alloc>& _lhs,
-    const map<_key, _Tp, _Compaire, _Alloc>& _rhs)
+    bool operator<=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+                    const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return !(_rhs < _lhs);
     }
     template <class _Key, class _Tp, class _Compare, class _Alloc>
     inline void
     swap(map<_Key, _Tp, _Compare, _Alloc> &_lhs,
-         map<_Key, _Tp, _Compare, _Alloc> &_rhs)
-    
+         map<_Key, _Tp, _Compare, _Alloc> &_rhs) 
     {
         _lhs.swap(_rhs);
     }
