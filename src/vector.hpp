@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/11 09:32:32 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/14 17:10:59 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,16 @@
 
 #include <memory>
 #include <vector>
-#include <iterator>
+#include <cstring>
 #include <stdexcept>
 #include <algorithm>
 #include <type_traits>
-#include "pair.hpp"
-#include "./utils/iterator_traits.hpp"
-#include "./utils/vector_iterator.hpp"
-#include "./utils/allocator_traits.hpp"
-#include "./utils/reverse_iterator.hpp"
 #include "./utils/utility.hpp"
 #include "./utils/algorithm.hpp"
+#include "./utils/vector_iterator.hpp"
+#include "./utils/iterator_traits.hpp"
+#include "./utils/reverse_iterator.hpp"
+#include "./utils/allocator_traits.hpp"
 
 namespace ft
 {
@@ -709,9 +708,10 @@ namespace ft
         iterator _ret = _make_iter(_p);
         if (_p >= _base._end)
             return (_ret);
-        for (; _p + 1 != _base._end; ++_p)
-            *_p = *(_p + 1);
-        alloc_traits::destroy(_base._alloc, _p);
+        // for (; _p + 1 != _base._end; ++_p)
+        //     *_p = *(_p + 1);
+        std::memmove(_p, _p + 1, (_base._end - _p - 1) * sizeof(*_p));
+        alloc_traits::destroy(_base._alloc, _base._end - 1);
         --_base._end;
         return (_ret);
     }
@@ -774,35 +774,25 @@ namespace ft
 /* ************************************************************************** */
                             // friend functions :(out)
 /* ************************************************************************** */
-    template <class _Tp, class _Allocator>
-    inline void
-    swap(vector<_Tp, _Allocator> &_lhs, vector<_Tp, _Allocator> &_rhs)
-    {
-        _rhs.swap(_lhs);
-    }
     
     template <class _Tp, class _Allocator>
     inline bool
     operator==(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
-        // const typename vector<_Tp, _Allocator>::size_type _size = _lhs.size();
         return _lhs.size() == _rhs.size() && ft::equal(_lhs.begin(), _lhs.end(), _rhs.begin());
     }
-
     template <class _Tp, class _Allocator>
     inline bool
     operator!=(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
         return !(_lhs == _rhs);
     }
-
     template <class _Tp, class _Allocator>
     inline bool
     operator<(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
         return ft::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end());
     }
-
     template <class _Tp, class _Allocator>
     inline bool
     operator>(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
@@ -816,12 +806,18 @@ namespace ft
     {
         return !(_lhs < _rhs);
     }
-
     template <class _Tp, class _Allocator>
     inline bool
     operator<=(const vector<_Tp, _Allocator> &_lhs, const vector<_Tp, _Allocator> &_rhs)
     {
         return !(_rhs < _lhs);
+    }
+    
+    template <class _Tp, class _Allocator>
+    inline void
+    swap(vector<_Tp, _Allocator> &_lhs, vector<_Tp, _Allocator> &_rhs)
+    {
+        _lhs.swap(_rhs);
     }
 }
 

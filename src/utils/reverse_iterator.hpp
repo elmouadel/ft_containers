@@ -6,12 +6,14 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 11:18:29 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/11 10:22:46 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/14 11:27:18 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REVERSE_ITERATOR_HPP
 #define REVERSE_ITERATOR_HPP
+
+#include "./iterator_traits.hpp"
 
 namespace ft
 {

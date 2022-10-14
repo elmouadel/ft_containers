@@ -4,6 +4,7 @@
 // #include "../../doc/cluv.hpp"
 #include <vector>
 #include "../../src/vector.hpp"
+#include "../../src/stack.hpp"
 #include "../../src/map.hpp"
 
 using namespace std;

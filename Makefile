@@ -6,7 +6,7 @@
 #    By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/15 08:46:38 by eabdelha          #+#    #+#              #
-#    Updated: 2022/10/09 19:13:52 by eabdelha         ###   ########.fr        #
+#    Updated: 2022/10/14 17:49:13 by eabdelha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ OBJ_PATH = ./obj/
 
 SRC_INCLUDES =	$(SRC_PATH)vector.hpp			\
 				$(SRC_PATH)map.hpp				\
-				$(SRC_PATH)pair.hpp				\
+				$(SRC_PATH)stack.hpp				\
 				$(UTLS_PATH)utility.hpp				\
 				$(UTLS_PATH)rb_tree.hpp				\
 				$(UTLS_PATH)algorithm.hpp			\

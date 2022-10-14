@@ -6,12 +6,14 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 10:39:12 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/28 13:17:34 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/14 11:28:15 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ALGORITHM_HPP
 #define ALGORITHM_HPP
+
+#include "./iterator_traits.hpp"
 
 namespace ft
 {

@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 00:13:49 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/14 11:51:36 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,13 @@
 #define MAP_HPP
 
 #include <memory>
-#include <map>
-#include <set>
-#include <iterator>
 #include <stdexcept>
 #include <algorithm>
 #include <type_traits>
-#include "pair.hpp"
-#include "./utils/allocator_traits.hpp"
-#include "./utils/iterator_traits.hpp"
+#include "./utils/rb_tree.hpp"
 #include "./utils/utility.hpp"
 #include "./utils/reverse_iterator.hpp"
-#include "./utils/rb_tree.hpp"
+#include "./utils/allocator_traits.hpp"
 
 namespace ft
 {
@@ -50,19 +45,19 @@ namespace ft
         _Static_assert((ft::is_same<typename allocator_type::value_type, value_type>::value), 
         "Allocator::value_type must be same type as value_type");
 
-        class value_compare
-        {
-            friend class map;
-            
-            protected:
-                key_compare comp;
-                value_compare(key_compare c) : comp(c) {}
-            public:
-                bool operator()(const value_type &_lhs, const value_type &_rhs) const
-                {
-                    return comp(_lhs.first, _rhs.first);
-                }
-        };
+            class value_compare
+            {
+                friend class map;
+                
+                protected:
+                    key_compare comp;
+                    value_compare(key_compare c) : comp(c) {}
+                public:
+                    bool operator()(const value_type &_lhs, const value_type &_rhs) const
+                    {
+                        return comp(_lhs.first, _rhs.first);
+                    }
+            };
         private:
             typedef ft::tree<value_type, value_compare, allocator_type> _base;
             _base _tree;
@@ -72,11 +67,11 @@ namespace ft
             typedef ft::reverse_iterator<iterator>          reverse_iterator;
             typedef ft::reverse_iterator<const_iterator>    const_reverse_iterator;
 
-        public:
-            void print(void)
-            {
-                _tree.print_tree(_tree.root());
-            }
+        // public:
+        //     void print(void)
+        //     {
+        //         _tree.print_tree(_tree.root());
+        //     }
 /* ************************************************************************** */
                             // Costructors :
 /* ************************************************************************** */
@@ -287,34 +282,6 @@ namespace ft
                 _ret = _tree._equal_range(value_type(_key, mapped_type()));
                 return (pcici(const_iterator(_ret.first), const_iterator(_ret.second)));
             }
-/* ************************************************************************** */
-                            // Non-member functions :
-/* ************************************************************************** */
-            // template<typename _K1, typename _T1, typename _C1, typename _A1>
-            // friend bool
-            // operator==(const map<_K1, _T1, _C1, _A1>&,
-            // const map<_K1, _T1, _C1, _A1>&);
-            // template<typename _K1, typename _T1, typename _C1, typename _A1>
-            // friend bool
-            // operator!=(const map<_K1, _T1, _C1, _A1>&,
-            // const map<_K1, _T1, _C1, _A1>&);
-            // template<typename _K1, typename _T1, typename _C1, typename _A1>
-            // friend bool
-            // operator<(const map<_K1, _T1, _C1, _A1>&,
-            // const map<_K1, _T1, _C1, _A1>&);
-            // template<typename _K1, typename _T1, typename _C1, typename _A1>
-            // friend bool
-            // operator<=(const map<_K1, _T1, _C1, _A1>&,
-            // const map<_K1, _T1, _C1, _A1>&);
-            // template<typename _K1, typename _T1, typename _C1, typename _A1>
-            // friend bool
-            // operator>(const map<_K1, _T1, _C1, _A1>&,
-            // const map<_K1, _T1, _C1, _A1>&);
-            // template<typename _K1, typename _T1, typename _C1, typename _A1>
-            // friend bool
-            // operator>=(const map<_K1, _T1, _C1, _A1>&,
-            // const map<_K1, _T1, _C1, _A1>&);
-
     };
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
     bool operator==(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
