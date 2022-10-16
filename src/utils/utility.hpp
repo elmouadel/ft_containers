@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 18:13:22 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 11:27:47 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/16 12:54:01 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,29 +33,41 @@ namespace ft
                                 // is_same :
 /* ************************************************************************** */
     template <class _T, class _U>
-    struct is_same : std::false_type {};
+    struct is_same { static const bool value = false; };
     
     template <class _T>
-    struct is_same<_T, _T> : std::true_type {};
+    struct is_same<_T, _T> { static const bool value = true; };
     
 /* ************************************************************************** */
                                 // is_iterator :
 /* ************************************************************************** */
     template<class T, class U, typename C = void>
-    struct is_convertible_input : std::false_type {};
+    struct is_convertible_input
+    {
+        static const bool value = false;
+    };
 
     template<class T, class U>
     struct is_convertible_input<T, U, 
-    typename ft::enable_if<ft::is_same<T, std::input_iterator_tag>::value>::type> : std::true_type {};
+    typename ft::enable_if<ft::is_same<T, std::input_iterator_tag>::value>::type>
+    {
+        static const bool value = true; 
+    };
 
     template<class T, class U, typename C = void>
-    struct is_convertible_forward : std::false_type {};
+    struct is_convertible_forward
+    {
+        static const bool value = false;
+    };
 
     template<class T, class U>
     struct is_convertible_forward<T, U, 
     typename ft::enable_if<ft::is_same<T, std::forward_iterator_tag>::value ||
         ft::is_same<T, std::bidirectional_iterator_tag>::value ||
-        ft::is_same<T, std::random_access_iterator_tag>::value>::type> : std::true_type {};
+        ft::is_same<T, std::random_access_iterator_tag>::value>::type>
+        {
+            static const bool value = true;
+        };
     
     template <typename T, bool = ft::_has_iterator_category<ft::iterator_traits<T> >::value>
     struct _is_input_iterator
@@ -68,10 +80,10 @@ namespace ft
         typename ft::iterator_traits<T>::iterator_category, std::forward_iterator_tag> {};
     
     template <typename T>
-    struct _is_input_iterator<T, false> : std::false_type {};
+    struct _is_input_iterator<T, false>  { static const bool value = false; };
 
     template <typename T>
-    struct _is_forward_iterator<T, false> : std::false_type {};
+    struct _is_forward_iterator<T, false> { static const bool value = false; };
 
 
     template <typename T>
@@ -131,7 +143,7 @@ namespace ft
     template<class InputIt1, class InputIt2>
     bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
     {
-        for (; (first1 != last1) && (first2 != last2); ++first1, /*(void)*/++first2)
+        for (; (first1 != last1) && (first2 != last2); ++first1, ++first2)
         {
             if (*first1 < *first2)
                 return (true);

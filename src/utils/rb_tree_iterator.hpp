@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:12:06 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 10:09:29 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/15 21:33:02 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ namespace ft
             friend class tree;
             template <class, class, class, class>
             friend class map;
+            template <class, class, class>
+            friend class set;
     };
 
     template <class Tp, class Iter>
@@ -153,6 +155,8 @@ namespace ft
             friend class tree;
             template <class, class, class, class>
             friend class map;
+            template <class, class, class>
+            friend class set;
             
     };
 }

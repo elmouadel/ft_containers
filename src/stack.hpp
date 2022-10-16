@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 15:56:10 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 17:50:45 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/15 21:16:14 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ namespace ft
     {
         public:
             typedef _Container                                  container_type;
-            typedef typename container_type::value_typ          value_type;
+            typedef typename container_type::value_type         value_type;
             typedef typename container_type::reference          reference;
-            typedef typename container_type::const_refrence     const_refrence;
+            typedef typename container_type::const_reference    const_reference;
             typedef typename container_type::size_type          size_type;
             
         private:
