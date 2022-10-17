@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 15:56:10 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/15 21:16:14 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/17 17:50:12 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ namespace ft
             typedef typename container_type::reference          reference;
             typedef typename container_type::const_reference    const_reference;
             typedef typename container_type::size_type          size_type;
+            static_assert((is_same<_Tp, value_type>::value), 
+            "value_type must be same type as container_type::value_type");
             
-        private:
+        protected:
             container_type c;
         
         public:

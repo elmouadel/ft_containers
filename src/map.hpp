@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 11:51:36 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/17 14:04:44 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,6 @@ namespace ft
                 : _tree(value_compare(_comp), _alloc)
             {
                 insert(_first, _last);
-                (void)_first;
-                (void)_last;
             }
 
             map(const map &_m)
@@ -164,7 +162,8 @@ namespace ft
                 typename _base::node_ptr _pos = _tree.root();
                 
                 if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
-                    std::__throw_out_of_range("map::at:  key not found");
+                    throw std::out_of_range("map::at:  key not found");
+                    // std::__throw_out_of_range("map::at:  key not found");
                 return (_pos->_value.second);
             }
             const mapped_type &at(const key_type &_key) const
@@ -172,7 +171,8 @@ namespace ft
                 typename _base::node_ptr _pos = _tree.root();
                 
                 if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
-                    std::__throw_out_of_range("map::at:  key not found");
+                    throw std::out_of_range("map::at:  key not found");
+                    // std::__throw_out_of_range("map::at:  key not found");
                 return (_pos->_value.second);
             }
 
@@ -195,11 +195,8 @@ namespace ft
             template <class _InputIterator>
             void insert(_InputIterator _first, _InputIterator _last)
             {
-                for (const_iterator _it = end(); _first != _last; ++_first)
-                {
-                    //check exp _it = end()
-                    _tree._insert_unique(_it.p_i, *_first);
-                }
+                for (; _first != _last; ++_first)
+                    _tree._insert_unique(*_first);
             }
             void erase (iterator _pos)
             {

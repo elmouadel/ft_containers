@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 17:55:40 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/16 10:10:30 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/16 14:36:12 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,22 @@ namespace ft
     template <class _Tp>
     struct _has_iterator_typedefs
     {
-        private:
-            struct one { char _one[1]; };
-            struct two { char _two[2]; };
-            
-            template <class _Up> 
-            static two _test(...);
-            
-            template <class _Up> 
-            static one _test(typename void_t<typename _Up::iterator_category>::type* = 0,
-                                                    typename void_t<typename _Up::difference_type>::type* = 0,
-                                                    typename void_t<typename _Up::value_type>::type* = 0,
-                                                    typename void_t<typename _Up::reference>::type* = 0,
-                                                    typename void_t<typename _Up::pointer>::type* = 0
-                                                    );
-        public:
-            static const bool value = sizeof(_test<_Tp>(0,0,0,0,0)) == 1;
+    private:
+        struct one { char _one[1]; };
+        struct two { char _two[2]; };
+        
+        template <class _Up> 
+        static two test(...);
+        
+        template <class _Up> 
+        static one test(typename void_t<typename _Up::iterator_category>::type* = 0,
+                        typename void_t<typename _Up::difference_type>::type* = 0,
+                        typename void_t<typename _Up::value_type>::type* = 0,
+                        typename void_t<typename _Up::reference>::type* = 0,
+                        typename void_t<typename _Up::pointer>::type* = 0
+                        );
+    public:
+        static const bool value = sizeof(test<_Tp>(0,0,0,0,0)) == 1;
     };
 
 
@@ -48,16 +48,17 @@ namespace ft
             struct two { char _two[2]; };
             
             template <class _Up> 
-            static two _test(...);
+            static two test(...);
             
             template <class _Up> 
-            static one _test(typename _Up::iterator_category* = 0);
+            static one test(typename void_t<typename _Up::iterator_category>::type* = 0);
         public:
-            static const bool value = sizeof(_test<_Tp>(0)) == 1;
+            static const bool value = sizeof(test<_Tp>(0)) == 1;
     };
 
 
-    template <class _Iter, bool> struct _iterator_traits {};
+    template <class _Iter, bool> 
+    struct _iterator_traits {};
     
     template <class _Iter>
     struct _iterator_traits<_Iter, true>

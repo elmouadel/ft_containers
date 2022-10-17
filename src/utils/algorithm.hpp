@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 10:39:12 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 11:28:15 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/16 17:18:48 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ namespace ft
         return (_distance(_first, _last, typename ft::iterator_traits<_Iter>::iterator_category()));
     }
 /* ************************************************************************** */
-                                // distance :
+                                // move_backward :
 /* ************************************************************************** */
     template <class _Ptr>
     void move_backward(_Ptr _first, _Ptr _last, _Ptr _result)

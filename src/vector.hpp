@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 17:10:59 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/17 12:41:19 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define VECTOR_HPP
 
 #include <memory>
-#include <vector>
 #include <cstring>
 #include <stdexcept>
 #include <algorithm>
@@ -55,19 +54,19 @@ namespace ft
             _vector_base(const allocator_type &_a);
             ~_vector_base();
             
-            void clear() { _destruct_at_end(_begin); }
-            size_type capacity() const
+            void _clear() { _destruct_at_end(_begin); }
+            size_type _capacity() const
             {
                 return static_cast<size_type>(_end_l - _begin);
             }
             void _destruct_at_end(pointer __new_last);
-            void length_error() const
+            void _length_error() const
             {
-                std::__throw_length_error("vector");
+                throw std::length_error("vector");
             }
-            void out_of_range() const
+            void _out_of_range() const
             {
-                std::__throw_out_of_range("vector");
+                throw std::out_of_range("vector");
             }
     };
     
@@ -100,8 +99,8 @@ namespace ft
     {
         if (_begin != nullptr)
         {
-            clear();
-            alloc_traits::deallocate(_alloc, _begin, capacity());
+            _clear();
+            alloc_traits::deallocate(_alloc, _begin, _capacity());
         }
     }
 
@@ -217,6 +216,7 @@ namespace ft
 /* ************************************************************************** */
                                 // iterators :(in)
 /* ************************************************************************** */
+        private:
             iterator _make_iter(pointer _p)  throw()
             {
                 return (iterator(_p));
@@ -225,6 +225,7 @@ namespace ft
             {
                 return (const_iterator(_p));
             }
+        public:
             iterator begin() throw()
             {
                 return (_make_iter(_base._begin));
@@ -270,7 +271,7 @@ namespace ft
 
             size_type capacity() const throw()
             {
-                return (_base.capacity());
+                return (_base._capacity());
             }
 
             bool empty() const throw()
@@ -304,13 +305,13 @@ namespace ft
             reference at(size_type _n)
             {
                 if (_n >= size())
-                    _base.out_of_range();
+                    _base._out_of_range();
                 return (_base._begin[_n]);
             }
             const_reference at(size_type _n) const
             {
                 if (_n >= size())
-                    _base.out_of_range();
+                    _base._out_of_range();
                 return (_base._begin[_n]);
             }
 /* ************************************************************************** */
@@ -376,7 +377,7 @@ namespace ft
 
             iterator erase(const_iterator _pos);
             iterator erase(const_iterator _first, const_iterator _last);
-            void clear() throw() {_base.clear(); }
+            void clear() throw() {_base._clear(); }
             void resize(size_type _size);
             void resize(size_type _size, const_reference _val);
             void swap(vector &_v)
@@ -433,7 +434,7 @@ namespace ft
     void vector<_Tp, _Allocator>::_vallocate(size_type _n)
     {
         if (_n > _base._alloc.max_size())
-            _base.length_error();
+            _base._length_error();
         _base._begin = _base._end = alloc_traits::allocate(_base._alloc, _n);
         _base._end_l = _base._begin + _n;
     }
@@ -469,7 +470,7 @@ namespace ft
     {
         const size_type _ms = max_size();
         if (_new_size > _ms)
-            _base.length_error();
+            _base._length_error();
         const size_type _cap = capacity();
         if (_cap >= _ms / 2)
             return (_ms);
@@ -521,7 +522,7 @@ namespace ft
         !ft::is_forward_iterator<_InputIterator>::value, void>::type
     vector<_Tp, _Allocator>::assign(_InputIterator _first, _InputIterator _last)
     {
-        _base.clear();
+        _base._clear();
         for (; _first != _last; ++_first)
             push_back(*_first);
     }
@@ -547,7 +548,7 @@ namespace ft
          }
          else
          {
-            _base.clear();
+            _base._clear();
             if (_base._begin)
                 alloc_traits::deallocate(_base._alloc, _base._begin, capacity());
             _base._begin = _base._end = _base._end_l = nullptr;
@@ -569,7 +570,7 @@ namespace ft
         }
         else
         {
-            _base.clear();
+            _base._clear();
             if (_base._begin)
                 alloc_traits::deallocate(_base._alloc, _base._begin, capacity());
             _base._begin = _base._end = _base._end_l = nullptr;
@@ -708,11 +709,8 @@ namespace ft
         iterator _ret = _make_iter(_p);
         if (_p >= _base._end)
             return (_ret);
-        // for (; _p + 1 != _base._end; ++_p)
-        //     *_p = *(_p + 1);
         std::memmove(_p, _p + 1, (_base._end - _p - 1) * sizeof(*_p));
-        alloc_traits::destroy(_base._alloc, _base._end - 1);
-        --_base._end;
+        alloc_traits::destroy(_base._alloc, --_base._end);
         return (_ret);
     }
     template <class _Tp, class _Allocator>

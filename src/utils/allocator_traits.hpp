@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 15:56:36 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/09/28 13:02:03 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/16 15:19:33 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ namespace ft
         static void
         construct_range_forward(allocator_type &_alloc, _Iter _begin1, _Iter _end1, _Ptr &_begin2)
         {
-            for (; _begin1 != _end1; ++_begin1, (void)++_begin2)
+            for (; _begin1 != _end1; ++_begin1, ++_begin2)
                 construct(_alloc, _begin2, *_begin1);
         }
         static size_type max_size(const allocator_type &_alloc) throw()
