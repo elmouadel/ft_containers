@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 15:56:36 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/16 15:19:33 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 15:26:10 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ namespace ft
         {
             return _alloc.allocate(_n);
         }
-        static void deallocate(allocator_type &_alloc, pointer _p, size_type _n) throw()
+        static void deallocate(allocator_type &_alloc, pointer _p, size_type _n)
         {
             _alloc.deallocate(_p, _n);
         }
-        template <class _Tp>
-        static void construct(allocator_type&, _Tp *_p)
-        {
-            new ((void *)_p) _Tp();
-        }
+        // template <class _Tp>
+        // static void construct(allocator_type&, _Tp *_p)
+        // {
+        //     new ((void *)_p) _Tp();
+        // }
         template <class _Tp, class _Up>
         static void construct(allocator_type &_alloc, _Tp *_p, _Up &_val)
         {
@@ -72,7 +72,7 @@ namespace ft
             for (; _begin1 != _end1; ++_begin1, ++_begin2)
                 construct(_alloc, _begin2, *_begin1);
         }
-        static size_type max_size(const allocator_type &_alloc) throw()
+        static size_type max_size(const allocator_type &_alloc)
         {
             return _alloc.max_size();
         }

@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/17 14:04:44 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 15:25:19 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,6 @@ namespace ft
             typedef ft::reverse_iterator<iterator>          reverse_iterator;
             typedef ft::reverse_iterator<const_iterator>    const_reverse_iterator;
 
-        // public:
-        //     void print(void)
-        //     {
-        //         _tree.print_tree(_tree.root());
-        //     }
 /* ************************************************************************** */
                             // Costructors :
 /* ************************************************************************** */
@@ -114,26 +109,26 @@ namespace ft
 /* ************************************************************************** */
                             // Iterators :
 /* ************************************************************************** */
-            iterator begin() throw() { return _tree.begin(); }
-            iterator end() throw() { return _tree.end(); }
+            iterator begin() { return _tree.begin(); }
+            iterator end() { return _tree.end(); }
             
-            reverse_iterator rbegin() throw()
+            reverse_iterator rbegin()
             {
                 return reverse_iterator(end());
             }
-            reverse_iterator rend() throw()
+            reverse_iterator rend()
             {
                 return reverse_iterator(begin());
             }
             
-            const_iterator begin() const throw() { return _tree.begin(); }
-            const_iterator end() const throw() { return _tree.end(); }
+            const_iterator begin() const { return _tree.begin(); }
+            const_iterator end() const { return _tree.end(); }
             
-            const_reverse_iterator rbegin() const throw()
+            const_reverse_iterator rbegin() const
             {
                 return const_reverse_iterator(end());
             }
-            const_reverse_iterator rend() const throw()
+            const_reverse_iterator rend() const
             {
                 return const_reverse_iterator(begin());
             }
@@ -141,9 +136,9 @@ namespace ft
 /* ************************************************************************** */
                             // Capacity :
 /* ************************************************************************** */
-            bool empty() const throw() { return (_tree.size() == 0); }
-            size_type size() const throw() { return (_tree.size()); }
-            size_type max_size() const throw() { return (_tree.max_size()); }
+            bool empty() const { return (_tree.size() == 0); }
+            size_type size() const { return (_tree.size()); }
+            size_type max_size() const { return (_tree.max_size()); }
 
             allocator_type get_allocator() const
             {
@@ -162,8 +157,7 @@ namespace ft
                 typename _base::node_ptr _pos = _tree.root();
                 
                 if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
-                    throw std::out_of_range("map::at:  key not found");
-                    // std::__throw_out_of_range("map::at:  key not found");
+                    throw std::out_of_range("ft::map::at: key not found");
                 return (_pos->_value.second);
             }
             const mapped_type &at(const key_type &_key) const
@@ -171,15 +165,14 @@ namespace ft
                 typename _base::node_ptr _pos = _tree.root();
                 
                 if (_tree._find_parent(_pos, value_type(_key, mapped_type())))
-                    throw std::out_of_range("map::at:  key not found");
-                    // std::__throw_out_of_range("map::at:  key not found");
+                    throw std::out_of_range("ft::map::at: key not found");
                 return (_pos->_value.second);
             }
 
 /* ************************************************************************** */
                             // Modifiers :
 /* ************************************************************************** */
-            void clear() throw() { _tree.clear(); }
+            void clear() { _tree.clear(); }
             void swap(map &_m)
             {
                 _tree.swap(_m._tree);
@@ -188,7 +181,7 @@ namespace ft
             {
                 return (_tree._insert_unique(_val));
             }
-            iterator insert(const_iterator _pos, const value_type& _val)
+            iterator insert(iterator _pos, const value_type& _val)
             {
                 return (_tree._insert_unique(_pos.p_i,  _val));
             }
@@ -225,7 +218,7 @@ namespace ft
 /* ************************************************************************** */
                             // Lookup :
 /* ************************************************************************** */
-            iterator find(const key_type &_key) 
+            iterator find(const key_type &_key)
             {
                 typename _base::node_ptr _pos = _tree.root();
 
@@ -241,7 +234,7 @@ namespace ft
                     return (const_iterator(_tree.end_node()));
                 return (const_iterator(_pos));
             }
-            size_type count(const key_type &_key)
+            size_type count(const key_type &_key) const
             {
                 typename _base::node_ptr _pos = _tree.root();
 
@@ -322,6 +315,16 @@ namespace ft
          map<_Key, _Tp, _Compare, _Alloc> &_rhs) 
     {
         _lhs.swap(_rhs);
+    }
+}
+namespace std
+{
+    template <class _Key, class _Tp, class _Compare, class _Alloc>
+    inline void
+    swap(ft::map<_Key, _Tp, _Compare, _Alloc> &_lhs,
+         ft::map<_Key, _Tp, _Compare, _Alloc> &_rhs) 
+    {
+        ft::swap(_lhs, _rhs);
     }
 }
 

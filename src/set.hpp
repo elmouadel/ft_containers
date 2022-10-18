@@ -6,14 +6,13 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/15 21:17:30 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/16 09:42:52 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:21:48 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SET_HPP
 #define SET_HPP
 
-#include <set>
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
@@ -33,7 +32,7 @@ namespace ft
             typedef _Key                                                key_type;
             typedef key_type                                            value_type;
             typedef _Compare                                            key_compare;
-            typedef key_compare                                            value_compare;
+            typedef key_compare                                         value_compare;
             typedef _Allocator                                          allocator_type;
             typedef value_type                                          &reference;
             typedef const value_type                                    &const_reference;
@@ -51,7 +50,7 @@ namespace ft
             _base _tree;
             
         public:
-            typedef typename _base::iterator                iterator;
+            typedef typename _base::const_iterator          iterator;
             typedef typename _base::const_iterator          const_iterator;
             typedef ft::reverse_iterator<iterator>          reverse_iterator;
             typedef ft::reverse_iterator<const_iterator>    const_reverse_iterator;
@@ -68,23 +67,21 @@ namespace ft
                 : _tree(value_compare(_comp), _alloc)
             {
                 insert(_first, _last);
-                (void)_first;
-                (void)_last;
             }
 
-            set(const set &_m)
-                : _tree(_m._tree)
+            set(const set &_s)
+                : _tree(_s._tree)
             {
-                insert(_m.begin(), _m.end());
+                insert(_s.begin(), _s.end());
             }
 
-            set &operator=(const set &_m)
+            set &operator=(const set &_s)
             {
-                if (this != &_m)
+                if (this != &_s)
                 {
                     _tree.clear();
-                    _tree.value_comp() = _m._tree.value_comp();
-                    insert(_m.begin(), _m.end());
+                    _tree.value_comp() = _s._tree.value_comp();
+                    insert(_s.begin(), _s.end());
                 }
                 return *this;
             }
@@ -100,26 +97,26 @@ namespace ft
 /* ************************************************************************** */
                             // Iterators :
 /* ************************************************************************** */
-            iterator begin() throw() { return _tree.begin(); }
-            iterator end() throw() { return _tree.end(); }
+            iterator begin() { return _tree.begin(); }
+            iterator end() { return _tree.end(); }
             
-            reverse_iterator rbegin() throw()
+            reverse_iterator rbegin()
             {
                 return reverse_iterator(end());
             }
-            reverse_iterator rend() throw()
+            reverse_iterator rend()
             {
                 return reverse_iterator(begin());
             }
             
-            const_iterator begin() const throw() { return _tree.begin(); }
-            const_iterator end() const throw() { return _tree.end(); }
+            const_iterator begin() const { return _tree.begin(); }
+            const_iterator end() const { return _tree.end(); }
             
-            const_reverse_iterator rbegin() const throw()
+            const_reverse_iterator rbegin() const
             {
                 return const_reverse_iterator(end());
             }
-            const_reverse_iterator rend() const throw()
+            const_reverse_iterator rend() const
             {
                 return const_reverse_iterator(begin());
             }
@@ -127,9 +124,9 @@ namespace ft
 /* ************************************************************************** */
                             // Capacity :
 /* ************************************************************************** */
-            bool empty() const throw() { return (_tree.size() == 0); }
-            size_type size() const throw() { return (_tree.size()); }
-            size_type max_size() const throw() { return (_tree.max_size()); }
+            bool empty() const { return (_tree.size() == 0); }
+            size_type size() const { return (_tree.size()); }
+            size_type max_size() const { return (_tree.max_size()); }
 
             allocator_type get_allocator() const
             {
@@ -139,27 +136,24 @@ namespace ft
 /* ************************************************************************** */
                             // Modifiers :
 /* ************************************************************************** */
-            void clear() throw() { _tree.clear(); }
-            void swap(set &_m)
+            void clear() { _tree.clear(); }
+            void swap(set &_s)
             {
-                _tree.swap(_m._tree);
+                _tree.swap(_s._tree);
             }            
             pair<iterator, bool> insert(const value_type &_val)
             {
                 return (_tree._insert_unique(_val));
             }
-            iterator insert(const_iterator _pos, const value_type& _val)
+            iterator insert(iterator _pos, const value_type& _val)
             {
                 return (_tree._insert_unique(_pos.p_i,  _val));
             }
             template <class _InputIterator>
             void insert(_InputIterator _first, _InputIterator _last)
             {
-                for (const_iterator _it = end(); _first != _last; ++_first)
-                {
-                    //check exp _it = end()
-                    _tree._insert_unique(_it.p_i, *_first);
-                }
+                for (; _first != _last; ++_first)
+                    _tree._insert_unique(*_first);
             }
             void erase (iterator _pos)
             {
@@ -169,7 +163,7 @@ namespace ft
             {
                 typename _base::node_ptr _pos = _tree.root();
 
-                if (_tree._find_parent(_pos, value_type(_key)))
+                if (_tree._find_parent(_pos, _key))
                     return (0);
                 _tree._erase(_pos);
                 return (1);
@@ -188,59 +182,35 @@ namespace ft
 /* ************************************************************************** */
                             // Lookup :
 /* ************************************************************************** */
-            iterator find(const key_type &_key) 
+            iterator find(const key_type &_key) const
             {
                 typename _base::node_ptr _pos = _tree.root();
 
-                if (_tree._find_parent(_pos, value_type(_key)))
+                if (_tree._find_parent(_pos, _key))
                     return (iterator(_tree.root()->_parent));
                 return (iterator(_pos));
             }
-            const_iterator find(const key_type &_key) const
-            {
-                typename _base::node_ptr _pos = _tree.root();
-                
-                if (_tree._find_parent(_pos, value_type(_key)))
-                    return (const_iterator(_tree.end_node()));
-                return (const_iterator(_pos));
-            }
-            size_type count(const key_type &_key)
+            size_type count(const key_type &_key) const
             {
                 typename _base::node_ptr _pos = _tree.root();
 
-                return !(_tree._find_parent(_pos, value_type(_key)));
+                return !(_tree._find_parent(_pos, _key));
             }
-            iterator lower_bound(const key_type &_key)
+            iterator lower_bound(const key_type &_key) const
             {
-                return (iterator(_tree._lower_bound(value_type(_key))));
+                return (iterator(_tree._lower_bound(_key)));
             }
-            const_iterator lower_bound(const key_type &_key) const
+            iterator upper_bound(const key_type &_key) const
             {
-                return (const_iterator(_tree._lower_bound(value_type(_key))));
+                return (iterator(_tree._upper_bound(_key)));
             }
-            iterator upper_bound(const key_type &_key)
-            {
-                return (iterator(_tree._upper_bound(value_type(_key))));
-            }
-            const_iterator upper_bound(const key_type &_key) const
-            {
-                return (const_iterator(_tree._upper_bound(value_type(_key))));
-            }
-            pair<iterator, iterator> equal_range(const key_type &_key)
+            pair<iterator, iterator> equal_range(const key_type &_key) const
             {
                 typedef pair<iterator, iterator> pii;
                 pair<typename _base::node_ptr, typename _base::node_ptr> _ret;
 
-                _ret = _tree._equal_range(value_type(_key));
+                _ret = _tree._equal_range(_key);
                 return (pii(iterator(_ret.first), iterator(_ret.second)));
-            }
-            pair<const_iterator, const_iterator> equal_range(const key_type &_key) const
-            {
-                typedef pair<const_iterator, const_iterator> pcici;
-                pair<typename _base::node_ptr, typename _base::node_ptr> _ret;
-
-                _ret = _tree._equal_range(value_type(_key));
-                return (pcici(const_iterator(_ret.first), const_iterator(_ret.second)));
             }
     };
     template<typename _key, typename _Compaire, typename _Alloc>
@@ -285,6 +255,16 @@ namespace ft
          set<_Key, _Compare, _Alloc> &_rhs) 
     {
         _lhs.swap(_rhs);
+    }
+}
+namespace std
+{
+    template <class _Key, class _Compare, class _Alloc>
+    inline void
+    swap(ft::set<_Key, _Compare, _Alloc> &_lhs,
+         ft::set<_Key, _Compare, _Alloc> &_rhs) 
+    {
+        ft::swap(_lhs, _rhs);
     }
 }
 

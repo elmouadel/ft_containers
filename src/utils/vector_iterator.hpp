@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/14 16:24:14 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 11:26:38 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 15:27:04 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 namespace ft
 {
     template <class Iter>
-    class v_iterator
+    class vector_iterator
     {
         public:
             typedef Iter                                                           iterator_type;
@@ -32,19 +32,19 @@ namespace ft
             iterator_type p_i;
         
         private:
-            v_iterator(iterator_type rhs) : p_i(rhs) {}
+            vector_iterator(iterator_type rhs) : p_i(rhs) {}
             template <class Tp, class Alloc>
             friend class vector;
         public:
-            v_iterator() {}
+            vector_iterator() {}
             template <class Tp>
-            v_iterator(const v_iterator<Tp> &rhs) : p_i(rhs.base()) {}
+            vector_iterator(const vector_iterator<Tp> &rhs) : p_i(rhs.base()) {}
             
-            iterator_type base() const throw() 
+            iterator_type base() const 
             {
                 return (p_i);
             }
-            v_iterator &operator=(const v_iterator &rhs)
+            vector_iterator &operator=(const vector_iterator &rhs)
             {
                 if (this != &rhs)
                     p_i =  rhs.p_i;
@@ -52,42 +52,42 @@ namespace ft
             }
             reference operator*() const { return *p_i; }
             pointer operator->() const { return p_i; }
-            v_iterator &operator++()
+            vector_iterator &operator++()
             {
                 ++p_i; 
                 return (*this);
             }
-            v_iterator operator++(int)
+            vector_iterator operator++(int)
             {
-                v_iterator tmp(*this);
+                vector_iterator tmp(*this);
                 ++p_i; 
                 return (tmp); 
             }
-            v_iterator &operator--()
+            vector_iterator &operator--()
             {
                 --p_i; 
                 return (*this);
             }
-            v_iterator operator--(int)
+            vector_iterator operator--(int)
             {
-                v_iterator tmp(*this);
+                vector_iterator tmp(*this);
                 --p_i; 
                 return (tmp); 
             }
-            v_iterator operator+(difference_type _n) const
+            vector_iterator operator+(difference_type _n) const
             {
                 return (p_i + _n);
             }
-            v_iterator &operator+=(difference_type _n)
+            vector_iterator &operator+=(difference_type _n)
             {
                 p_i += _n;
                 return (*this);
             }
-            v_iterator operator-(difference_type _n) const
+            vector_iterator operator-(difference_type _n) const
             {
                 return (p_i - _n);
             }
-            v_iterator &operator-=(difference_type _n)
+            vector_iterator &operator-=(difference_type _n)
             {
                 p_i -= _n;
                 return (*this);
@@ -98,42 +98,42 @@ namespace ft
             }
         private:
             template <class Iter1, class Iter2>
-            friend bool operator==(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend bool operator==(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.p_i == rhs.p_i);
             }
             template <class Iter1, class Iter2>
-            friend bool operator!=(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend bool operator!=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.p_i != rhs.p_i);
             }
             template <class Iter1, class Iter2>
-            friend bool operator<(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend bool operator<(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.p_i < rhs.p_i);
             }
             template <class Iter1, class Iter2>
-            friend bool operator>(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend bool operator>(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.p_i > rhs.p_i);
             }
             template <class Iter1, class Iter2>
-            friend bool operator<=(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend bool operator<=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.p_i <= rhs.p_i);
             }
             template <class Iter1, class Iter2>
-            friend bool operator>=(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend bool operator>=(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.p_i >= rhs.p_i);
             }
             template <class Iter1, class Iter2>
-            friend difference_type operator-(const v_iterator<Iter1> &lhs, const v_iterator<Iter2> &rhs)
+            friend difference_type operator-(const vector_iterator<Iter1> &lhs, const vector_iterator<Iter2> &rhs)
             {
                 return (lhs.base() - rhs.base());
             }
             template <class Iter1>
-            friend v_iterator<Iter1> operator+(difference_type _n, v_iterator<Iter1> rhs)
+            friend vector_iterator<Iter1> operator+(difference_type _n, vector_iterator<Iter1> rhs)
             {
                 rhs.p_i += _n;
                 return (rhs);

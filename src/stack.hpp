@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 15:56:10 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/17 17:50:12 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:27:03 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,6 @@ namespace ft
                 : c(_c)
             {
             }
-            // stack(const stack &_rhs) : c(_rhs.c) 
-            // {
-            // }
             ~stack()
             {
             }

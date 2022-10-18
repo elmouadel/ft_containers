@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:12:06 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/15 21:33:02 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:00:45 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace ft
         public:
             rb_tree_iterator() {}
             
-            iterator_type base() const throw() 
+            iterator_type base() const 
             {
                 return (p_i);
             }
@@ -81,8 +81,6 @@ namespace ft
             friend class tree;
             template <class, class, class, class>
             friend class map;
-            template <class, class, class>
-            friend class set;
     };
 
     template <class Tp, class Iter>
@@ -92,7 +90,7 @@ namespace ft
             typedef Iter                                iterator_type;
             typedef Tp                                  value_type;
             typedef ptrdiff_t                           difference_type;
-            typedef const Tp*                                 pointer;
+            typedef const Tp*                           pointer;
             typedef const Tp&                           reference;
             typedef std::bidirectional_iterator_tag     iterator_category;
             typedef rb_tree_iterator<Tp, Iter>          non_const_iterator;
@@ -107,7 +105,7 @@ namespace ft
             rb_tree_const_iterator() {}
             rb_tree_const_iterator(const non_const_iterator &rhs) : p_i(rhs.base()) {}
             
-            iterator_type base() const throw() 
+            iterator_type base() const 
             {
                 return (p_i);
             }

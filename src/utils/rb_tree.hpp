@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/01 14:56:06 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/14 11:52:13 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:00:20 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,20 @@ namespace ft
     };
     //*********************
     template <class _N_ptr>
-    inline bool _tree_is_left_child(_N_ptr _n) throw()
+    inline bool _tree_is_left_child(_N_ptr _n)
     {
         return _n == _n->_parent->_left;
     }
     //*********************
     template <class _N_ptr>
-    inline _N_ptr _tree_min(_N_ptr _n) throw()
+    inline _N_ptr _tree_min(_N_ptr _n)
     {
         while (_n->_left != nullptr)
             _n = _n->_left;
         return _n;
     }
     template <class _N_ptr>
-    inline _N_ptr _tree_max(_N_ptr _n) throw()
+    inline _N_ptr _tree_max(_N_ptr _n)
     {
         while (_n->_right != nullptr)
             _n = _n->_right;
@@ -53,7 +53,7 @@ namespace ft
     }
     //*********************
     template <class _N_ptr> 
-    inline _N_ptr _tree_next(_N_ptr _n) throw()
+    inline _N_ptr _tree_next(_N_ptr _n)
     {
         if (_n->_right != nullptr)
             return (_tree_min(_n->_right));
@@ -62,7 +62,7 @@ namespace ft
         return (_n->_parent);
     }
     template <class _N_ptr> 
-    inline _N_ptr _tree_prev(_N_ptr _n) throw()
+    inline _N_ptr _tree_prev(_N_ptr _n)
     {
         if (_n->_left != nullptr)
             return (_tree_max(_n->_left));
@@ -136,8 +136,7 @@ namespace ft
                             // Costructors :
 /* ************************************************************************** */
     public:
-        explicit tree(const value_compare &_comp = value_compare(), 
-                    const allocator_type &_alloc = allocator_type())
+        explicit tree(const value_compare &_comp, const allocator_type &_alloc)
             : _alloc(_alloc), _n_alloc(_alloc), _k_comp(_comp), _size(0)
         {
             _end_node = n_alloc_traits::allocate(_n_alloc, 1);
@@ -160,23 +159,23 @@ namespace ft
 /* ************************************************************************** */
                             // Iterators :
 /* ************************************************************************** */
-        iterator begin() throw() { return iterator(_begin_node); }
+        iterator begin() { return iterator(_begin_node); }
 
-        iterator end() throw() { return iterator(_end_node); }
+        iterator end() { return iterator(_end_node); }
         
-        const_iterator begin() const throw() { return const_iterator(_begin_node); }
+        const_iterator begin() const { return const_iterator(_begin_node); }
 
-        const_iterator end() const throw() { return const_iterator(_end_node); }
+        const_iterator end() const { return const_iterator(_end_node); }
         
 /* ************************************************************************** */
                             // Capacity :
 /* ************************************************************************** */
-        size_type max_size() const throw()
+        size_type max_size() const
         {
             return (std::min<size_type>(alloc_traits::max_size(_n_alloc),
                             std::numeric_limits<difference_type>::max()));
         }
-        size_type size() const throw() { return (_size); }
+        size_type size() const { return (_size); }
 /* ************************************************************************** */
                             // node handle :
 /* ************************************************************************** */
@@ -202,27 +201,27 @@ namespace ft
                             // geters :
 /* ************************************************************************** */
     public:
-        const node_allocator &_node_alloc() const throw()
+        const node_allocator &_node_alloc() const
         {
             return (_n_alloc);
         }
-        const value_compare &value_comp() const throw()
+        const value_compare &value_comp() const
         {
             return (_k_comp);
         }
-        value_compare &value_comp() throw()
+        value_compare &value_comp()
         {
             return (_k_comp);
         }
-        const node_ptr &root() const throw() 
+        const node_ptr &root() const 
         { 
             return _end_node->_left; 
         }
-        const node_ptr &end_node() const throw() 
+        const node_ptr &end_node() const 
         { 
             return _end_node; 
         }
-        const allocator_type &alloc() const throw()
+        const allocator_type &alloc() const
         {
             return (_alloc);
         }
@@ -231,7 +230,7 @@ namespace ft
                             // Modifiers :
 /* ************************************************************************** */
     public:
-        void clear() throw()
+        void clear()
         {
             destroy(_end_node->_left);
             _end_node->_left = nullptr;
@@ -354,7 +353,7 @@ namespace ft
                             // Modifiers utils :
 /* ************************************************************************** */
     public:
-        bool _find_parent(node_ptr &_pos,const value_type &_val) const throw()
+        bool _find_parent(node_ptr &_pos,const value_type &_val) const
         {
             if (!_pos)
                 return(true);
@@ -452,7 +451,7 @@ namespace ft
             _tree_balance_after_insert(root(), _new_n);
             ++_size;
         }
-        void destroy(node_ptr _n) throw()
+        void destroy(node_ptr _n)
         {
             if (_n)
             {
@@ -462,15 +461,15 @@ namespace ft
             }
         }
 /* ************************************************************************** */
-/* ************************************************************************** */
                             // private utils functions :
 /* ************************************************************************** */
 /* ************************************************************************** */
-    private:
+
 /* ************************************************************************** */
                             // insert node :
 /* ************************************************************************** */
-        void _right_rotate_tree(node_ptr _n) const throw()
+    private:
+        void _right_rotate_tree(node_ptr _n) const
         {
             if (_tree_is_left_child(_n->_parent))
                 _n->_parent->_parent->_left = _n;
@@ -484,7 +483,7 @@ namespace ft
             _n->_parent = _n->_right->_parent;
             _n->_right->_parent = _n;    
         }
-        void _left_rotate_tree(node_ptr _n) const throw()
+        void _left_rotate_tree(node_ptr _n) const
         {
             if (_tree_is_left_child(_n->_parent))
                 _n->_parent->_parent->_left = _n;
@@ -498,7 +497,7 @@ namespace ft
             _n->_parent = _n->_left->_parent;
             _n->_left->_parent = _n;    
         }
-        bool _is_red_sibling(node_ptr _n) const throw()
+        bool _is_red_sibling(node_ptr _n) const
         {
             if (_tree_is_left_child(_n))
             {
@@ -510,7 +509,7 @@ namespace ft
                 return (_n->_parent->_left->_color == _red_n);
             return (false);
         }
-        void _tree_balance_after_insert(node_ptr _root, node_ptr _n) const throw()
+        void _tree_balance_after_insert(node_ptr _root, node_ptr _n) const
         {
             while (_n != _root)
             {
@@ -551,32 +550,32 @@ namespace ft
 /* ************************************************************************** */
                             // delete node :
 /* ************************************************************************** */
-        bool _is_leaf_red_node(node_ptr _n) const throw()
+        bool _is_leaf_red_node(node_ptr _n) const
         {
             if (_n->_color == _red_n && !_n->_left && !_n->_right)
                 return true;
             return false;
         }
-        bool _has_black_children(node_ptr _n) const throw()
+        bool _has_black_children(node_ptr _n) const
         {
             return ((!_n->_left || _n->_left->_color == _black_n) 
             && (!_n->_right || _n->_right->_color == _black_n));
         }
-        void _assign_to_right_parent(node_ptr _n, node_ptr _val) const throw()
+        void _assign_to_right_parent(node_ptr _n, node_ptr _val) const
         {
             if (_tree_is_left_child(_n))
                 _n->_parent->_left = _val;
             else
                 _n->_parent->_right = _val;
         }
-        void _rotate_to_opposite_side(node_ptr _n) const throw()
+        void _rotate_to_opposite_side(node_ptr _n) const
         {
             if (_tree_is_left_child(_n))
                 _right_rotate_tree(_n);
             else
                 _left_rotate_tree(_n);
         }
-        void _change_children_parents(node_ptr _n1, node_ptr _n2) const throw()
+        void _change_children_parents(node_ptr _n1, node_ptr _n2) const
         {
              if (_n1->_right && _n1->_right != _n2)
                 _n1->_right->_parent = _n2;
@@ -587,7 +586,7 @@ namespace ft
             if (_n2->_left)
                 _n2->_left->_parent = _n1;
         }
-        void _swap_node(node_ptr _n1, node_ptr _n2) const throw()
+        void _swap_node(node_ptr _n1, node_ptr _n2) const
         {
             _change_children_parents(_n1, _n2);
             _assign_to_right_parent(_n1, _n2);
@@ -599,7 +598,7 @@ namespace ft
     
             std::swap(_n1->_color, _n2->_color);
         }
-        void _swap_related_nodes(node_ptr _n1, node_ptr _n2) const throw()
+        void _swap_related_nodes(node_ptr _n1, node_ptr _n2) const
         {
             _change_children_parents(_n1, _n2);
             _assign_to_right_parent(_n1, _n2);
@@ -621,7 +620,7 @@ namespace ft
             
             std::swap(_n1->_color, _n2->_color);
         }
-        void _get_leaf_node(node_ptr _n) const throw()
+        void _get_leaf_node(node_ptr _n) const
         {
             node_ptr _nx = _n;
             
@@ -637,7 +636,7 @@ namespace ft
                     _swap_related_nodes(_n, _nx);
             }
         } 
-        node_ptr _get_node_sibling(node_ptr &_n, node_ptr _root) const throw()
+        node_ptr _get_node_sibling(node_ptr &_n, node_ptr _root) const
         {
             while ((!_n->_parent->_left || !_n->_parent->_right) && _n != _root)
                 _n = _n->_parent;
@@ -646,7 +645,7 @@ namespace ft
             else
                 return _n->_parent->_left;
         }
-        void _tree_delete_node(node_ptr _root, node_ptr _n) const throw()
+        void _tree_delete_node(node_ptr _root, node_ptr _n) const
         {
             _get_leaf_node(_n);
             if (_is_leaf_red_node(_n) || _n == _root)
