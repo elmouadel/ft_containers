@@ -6,7 +6,7 @@
 #    By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/15 08:46:38 by eabdelha          #+#    #+#              #
-#    Updated: 2022/10/14 17:49:13 by eabdelha         ###   ########.fr        #
+#    Updated: 2022/10/19 12:28:20 by eabdelha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,8 @@ STD_NAME = stdcontainers
 
 SRC_PATH = ./src/
 UTLS_PATH = ./src/utils/
-FT_TESTS_PATH = ./tests/ft_tests/
-STD_TESTS_PATH = ./tests/std_tests/
+FT_TESTS_PATH = ./tests/
+STD_TESTS_PATH = ./tests/
 OBJ_PATH = ./obj/
 
 SRC_INCLUDES =	$(SRC_PATH)vector.hpp			\

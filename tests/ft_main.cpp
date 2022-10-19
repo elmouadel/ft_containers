@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_main.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/10/19 12:29:18 by eabdelha          #+#    #+#             */
+/*   Updated: 2022/10/19 12:32:44 by eabdelha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <deque>
-#include "../../src/vector.hpp"
-#include "../../src/stack.hpp"
-#include "../../src/map.hpp"
-#include "../../src/set.hpp"
+#include "../src/vector.hpp"
+#include "../src/stack.hpp"
+#include "../src/map.hpp"
+#include "../src/set.hpp"
 
 #include <stdlib.h>
 
@@ -42,17 +54,29 @@ public:
     iterator end() { return this->c.end(); }
 };
 
-int main(int argc, char **argv)
+void inputf(void)
 {
-    if (argc != 2)
-    {
-        std::cerr << "Usage: ./test seed" << std::endl;
-        std::cerr << "Provide a seed please" << std::endl;
-        return 1;
-    }
-    const int seed = atoi(argv[1]);
-    srand(seed);
+    std::ifstream   infile("./tests/input");
 
+    ft::vector<char> words;
+
+    words.push_back('a');
+    words.push_back('b');
+    words.push_back('c');
+    words.push_back('d');
+
+    words.insert(words.begin() + 4 , (std::istreambuf_iterator<char>(infile)), (std::istreambuf_iterator<char>()));
+    
+    ft::vector<char>::iterator it = words.begin();
+    std::cout << std::endl << words.size() << std::endl;
+    for (; it != words.end(); ++it)
+    {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+}
+void ft_tests(void)
+{
     ft::vector<int>::iterator it_vi;
 
     ft::map<int, int>::iterator it_mi;
@@ -73,7 +97,8 @@ int main(int argc, char **argv)
     ft::set<int> set_int;
     ft::set<std::string> set_str;
 
-        /******************************* vectors tests ********************************/
+/******************************* vectors tests ********************************/
+    inputf();
         for (int i = 0; i < COUNT; i++)
             vector_int.push_back(rand() % COUNT);
     {
@@ -449,5 +474,20 @@ int main(int argc, char **argv)
         std::cout << set_tmp_int.size() << std::endl;
     }
 
+}
+
+int main(int argc, char **argv)
+{
+    if (argc != 2)
+    {
+        std::cerr << "Usage: ./test seed" << std::endl;
+        std::cerr << "Provide a seed please" << std::endl;
+        return 1;
+    }
+    const int seed = atoi(argv[1]);
+    srand(seed);
+
+    ft_tests();
+    // system("leaks ftcontainers");
     return (0);
 }

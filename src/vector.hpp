@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/18 18:00:03 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/19 15:14:14 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ namespace ft
             {
                 return static_cast<size_type>(_end_l - _begin);
             }
-            void _destruct_at_end(pointer __new_last);
+            void _destruct_at_end(pointer _new_last);
             void _length_error() const
             {
                 throw std::length_error("vector");
@@ -117,8 +117,8 @@ namespace ft
         
         public:
             typedef Tp                                              value_type;
-            typedef value_type                                      &reference;
-            typedef const value_type                                &const_reference;
+            typedef value_type&                                     reference;
+            typedef const value_type&                               const_reference;
             typedef Allocator                                       allocator_type;
             typedef typename ft::allocator_traits<allocator_type>   alloc_traits;
             typedef typename alloc_traits::size_type                size_type;
@@ -183,6 +183,7 @@ namespace ft
             ~vector()
             {
             }
+            
 /* ************************************************************************** */
                                 // assignment :(in)
 /* ************************************************************************** */
@@ -203,6 +204,7 @@ namespace ft
             {
                 return (_base._alloc);
             }
+
 /* ************************************************************************** */
                                 // iterators :(in)
 /* ************************************************************************** */
@@ -278,9 +280,10 @@ namespace ft
                 if (_n > capacity())
                 {
                     tmp_buffer<value_type, allocator_type &> _v(_n, size(), _base._alloc);
-                    _swap_out_circular_buffer(_v);
+                    _construct_and_swap_buffers(_v);
                 }
             }
+            
 /* ************************************************************************** */
                             // accessing functions :(in)
 /* ************************************************************************** */
@@ -304,6 +307,7 @@ namespace ft
                     _base._out_of_range();
                 return (_base._begin[_in]);
             }
+            
 /* ************************************************************************** */
                         // get top functions :(in)
 /* ************************************************************************** */
@@ -332,6 +336,7 @@ namespace ft
             {
                 return (_base._begin);
             }
+            
 /* ************************************************************************** */
                             // Modifiers functions :(in)
 /* ************************************************************************** */
@@ -368,7 +373,6 @@ namespace ft
             iterator erase(iterator _pos);
             iterator erase(iterator _first, iterator _last);
             void clear() throw() {_base._clear(); }
-            // void resize(size_type _size);
             void resize(size_type _size, const_reference _val = value_type());
             void swap(vector &_v)
             {
@@ -376,6 +380,7 @@ namespace ft
                 std::swap(_base._end, _v._base._end);
                 std::swap(_base._end_l, _v._base._end_l);
             }
+            
 /* ************************************************************************** */
                             // private struct :(in)
 /* ************************************************************************** */
@@ -397,20 +402,21 @@ namespace ft
                 {
                 }
             };
+            
 /* ************************************************************************** */
                             // private functions :(in)
 /* ************************************************************************** */      
         private:
             void _vallocate(size_type _n);
-            // void _construct_at_end(size_type _n);
             void _construct_at_end(size_type _n, const_reference _val);
             void _push_back_slow_path(const_reference _val);
-            size_type _recommend(size_type _new_size) const;
-            void _swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v);
-            pointer _swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v, pointer _p);
+            size_type _new_capacity(size_type _new_size) const;
+            void _construct_and_swap_buffers(tmp_buffer<value_type, allocator_type&> &_v);
+            pointer _construct_and_swap_buffers(tmp_buffer<value_type, allocator_type&> &_v, pointer _p);
             void _move_range(pointer _from_s, pointer _from_e, pointer _new_s);
         
     };
+
 /* ************************************************************************** */
 /* ************************************************************************** */
                             // functions def(out)
@@ -429,12 +435,6 @@ namespace ft
         _base._end_l = _base._begin + _n;
     }
 
-    // template<class _Tp, class _Allocator>
-    // inline void vector<_Tp, _Allocator>::_construct_at_end(size_type _n)
-    // {
-    //     for (; _n; --_n, ++_base._end)
-    //         alloc_traits::construct(_base._alloc, _base._end);
-    // }
     template<class _Tp, class _Allocator>
     inline void vector<_Tp, _Allocator>::_construct_at_end(size_type _n, const_reference _val)
     {
@@ -445,17 +445,16 @@ namespace ft
     template<class _Tp, class _Allocator>
     void vector<_Tp, _Allocator>::_push_back_slow_path(const_reference _val)
     {
-        size_type                               size = this->size();
-        tmp_buffer<value_type, allocator_type&> _v(_recommend(size + 1), size, _base._alloc);
+        tmp_buffer<value_type, allocator_type&> _v(_new_capacity(size() + 1), size(), _base._alloc);
         
         alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
-        _v._tmp._end++;
-        _swap_out_circular_buffer(_v);
+        ++_v._tmp._end;
+        _construct_and_swap_buffers(_v);
     }
     template <class _Tp, class _Allocator>
     inline
     typename vector<_Tp, _Allocator>::size_type
-    vector<_Tp, _Allocator>::_recommend(size_type _new_size) const
+    vector<_Tp, _Allocator>::_new_capacity(size_type _new_size) const
     {
         const size_type _ms = max_size();
         if (_new_size > _ms)
@@ -466,7 +465,7 @@ namespace ft
         return (std::max<size_type>(2 * _cap, _new_size));
     }
     template <class _Tp, class _Allocator>
-    void vector<_Tp, _Allocator>::_swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v)
+    void vector<_Tp, _Allocator>::_construct_and_swap_buffers(tmp_buffer<value_type, allocator_type&> &_v)
     {
         alloc_traits::construct_backward(_base._alloc, _base._begin, _base._end, _v._tmp._begin);
         std::swap(_base._begin, _v._tmp._begin);
@@ -475,7 +474,7 @@ namespace ft
     }
     template <class _Tp, class _Allocator>
     typename vector<_Tp, _Allocator>::pointer
-    vector<_Tp, _Allocator>::_swap_out_circular_buffer(tmp_buffer<value_type, allocator_type&> &_v, pointer _p)
+    vector<_Tp, _Allocator>::_construct_and_swap_buffers(tmp_buffer<value_type, allocator_type&> &_v, pointer _p)
     {
         pointer _r = _v._tmp._begin;
         alloc_traits::construct_backward(_base._alloc, _base._begin, _p, _v._tmp._begin);
@@ -495,6 +494,7 @@ namespace ft
             alloc_traits::construct(_base._alloc, _base._end, *_i);
         ft::move_backward(_from_s, _from_s + _n, _end_hol);
     }
+    
 /* ************************************************************************** */
                                 // assignment :(out)
 /* ************************************************************************** */
@@ -541,7 +541,7 @@ namespace ft
             if (_base._begin)
                 alloc_traits::deallocate(_base._alloc, _base._begin, capacity());
             _base._begin = _base._end = _base._end_l = nullptr;
-            _vallocate(_recommend(_new_size));
+            _vallocate(_new_capacity(_new_size));
             alloc_traits::construct_range_forward(_base._alloc, _first, _last, _base._end);
         }
     }
@@ -550,10 +550,9 @@ namespace ft
     {
         if (_n <= capacity())
         {
-            size_type _size = size();
-            std::fill_n(_base._begin, std::min(_n, _size), _val);
-            if (_n > _size)
-                _construct_at_end(_n - _size, _val);
+            std::fill_n(_base._begin, std::min(_n, size()), _val);
+            if (_n > size())
+                _construct_at_end(_n - size(), _val);
             else
                 _base._destruct_at_end(_base._begin + _n);
         }
@@ -563,7 +562,7 @@ namespace ft
             if (_base._begin)
                 alloc_traits::deallocate(_base._alloc, _base._begin, capacity());
             _base._begin = _base._end = _base._end_l = nullptr;
-            _vallocate(_recommend(_n));
+            _vallocate(_new_capacity(_n));
             _construct_at_end(_n, _val);
         }
     }
@@ -593,11 +592,11 @@ namespace ft
         }
         else
         {
-            tmp_buffer<value_type, allocator_type&> _v(_recommend(this->size() + 1), _p - _base._begin, _base._alloc);
+            tmp_buffer<value_type, allocator_type&> _v(_new_capacity(this->size() + 1), _p - _base._begin, _base._alloc);
             
             alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, _val);
             ++_v._tmp._end;
-            _p = _swap_out_circular_buffer(_v, _p);
+            _p = _construct_and_swap_buffers(_v, _p);
         }
         return (_make_iter(_p));
     }
@@ -628,11 +627,11 @@ namespace ft
         }
         else
         {
-            tmp_buffer<value_type, allocator_type&> _v(_recommend(this->size() + _n), _p - _base._begin, _base._alloc);
+            tmp_buffer<value_type, allocator_type&> _v(_new_capacity(this->size() + _n), _p - _base._begin, _base._alloc);
             
             for (; _n; --_n, ++_v._tmp._end)
                 alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, _val);
-            _p = _swap_out_circular_buffer(_v, _p);
+            _p = _construct_and_swap_buffers(_v, _p);
         }
         return (_make_iter(_p));
     }
@@ -681,12 +680,12 @@ namespace ft
         }
         else
         {
-            tmp_buffer<value_type, allocator_type&> _v(_recommend(this->size() + _n), _p - _base._begin, _base._alloc);
+            tmp_buffer<value_type, allocator_type&> _v(_new_capacity(this->size() + _n), _p - _base._begin, _base._alloc);
             
             for (; _first != _last; ++_first, ++_v._tmp._end)
                 alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, *_first);
                 
-            _p = _swap_out_circular_buffer(_v, _p);
+            _p = _construct_and_swap_buffers(_v, _p);
         }
         return (_make_iter(_p));
     }
@@ -717,26 +716,6 @@ namespace ft
             alloc_traits::destroy(_base._alloc, _base._end - 1);
         return (_ret);
     }
-    // template <class _Tp, class _Allocator>
-    // void vector<_Tp, _Allocator>::resize(size_type _size)
-    // {
-    //     size_type _hol_size = size();
-    //     size_type _n = _size - _hol_size;
-    //     if (_size < _hol_size)
-    //         _base._destruct_at_end(_base._begin + _size);
-    //     else if (_size > _hol_size)
-    //     {
-    //         if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
-    //             _construct_at_end(_n);
-    //         else
-    //         {
-    //             tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
-    //             for (; _n; --_n, ++_v._tmp._end)
-    //                 alloc_traits::construct(_base._alloc, _v._tmp._end);
-    //             _swap_out_circular_buffer(_v);
-    //         }    
-    //     }
-    // }
     template <class _Tp, class _Allocator>
     void vector<_Tp, _Allocator>::resize(size_type _size, const_reference _val)
     {
@@ -750,10 +729,10 @@ namespace ft
                 _construct_at_end(_n, _val);
             else
             {
-                tmp_buffer<value_type, allocator_type&> _v(_recommend(_hol_size + _n), _hol_size, _base._alloc);
+                tmp_buffer<value_type, allocator_type&> _v(_new_capacity(_hol_size + _n), _hol_size, _base._alloc);
                 for (; _n; --_n, ++_v._tmp._end)
                     alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
-                _swap_out_circular_buffer(_v);
+                _construct_and_swap_buffers(_v);
             }    
         }
     }

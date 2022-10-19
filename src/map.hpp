@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/18 15:25:19 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/18 21:16:29 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ namespace ft
             typedef pair<const key_type, mapped_type>                   value_type;
             typedef _Compare                                            key_compare;
             typedef _Allocator                                          allocator_type;
-            typedef value_type                                          &reference;
-            typedef const value_type                                    &const_reference;
+            typedef value_type&                                         reference;
+            typedef const value_type&                                   const_reference;
             typedef typename ft::allocator_traits<allocator_type>       alloc_traits;
             typedef typename alloc_traits::size_type                    size_type;
             typedef typename alloc_traits::difference_type              difference_type;

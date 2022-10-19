@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 10:39:12 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/16 17:18:48 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/19 12:23:47 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,7 @@ namespace ft
     inline typename ft::iterator_traits<_RandIter>::difference_type
     _distance(_RandIter _first, _RandIter _last, std::random_access_iterator_tag)
     {
-        typename ft::iterator_traits<_RandIter>::difference_type _i(0);
-        for (;_first != _last; ++_first)
-            ++_i;
-        return(_i);
+        return(_last - _first);
     }
     
     template <class _Iter>
