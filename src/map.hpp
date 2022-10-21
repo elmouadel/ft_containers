@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 16:03:19 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/18 21:16:29 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/21 18:37:20 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
-#include <type_traits>
 #include "./utils/rb_tree.hpp"
 #include "./utils/utility.hpp"
 #include "./utils/reverse_iterator.hpp"
@@ -274,43 +273,43 @@ namespace ft
             }
     };
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator==(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+    inline bool operator==(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
                     const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return (_lhs.size() == _rhs.size() && std::equal(_lhs.begin(), _lhs.end(), _rhs.begin()));
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator<(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+    inline bool operator<(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
                     const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return (std::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end()));
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator!=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+    inline bool operator!=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
                     const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return !(_lhs == _rhs);
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator>(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+    inline bool operator>(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
                     const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return (_rhs < _lhs);
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator>=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+    inline bool operator>=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
                     const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return !(_lhs < _rhs);
     }
     template<typename _key, typename _Tp, typename _Compaire, typename _Alloc>
-    bool operator<=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
+    inline bool operator<=(const map<_key, _Tp, _Compaire, _Alloc> &_lhs,
                     const map<_key, _Tp, _Compaire, _Alloc> &_rhs)
     {
         return !(_rhs < _lhs);
     }
     template <class _Key, class _Tp, class _Compare, class _Alloc>
-    inline void
+    inline  void
     swap(map<_Key, _Tp, _Compare, _Alloc> &_lhs,
          map<_Key, _Tp, _Compare, _Alloc> &_rhs) 
     {

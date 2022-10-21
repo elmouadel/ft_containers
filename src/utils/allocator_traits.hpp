@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 15:56:36 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/19 14:56:18 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/21 18:30:34 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ namespace ft
         {
             _alloc.deallocate(_p, _n);
         }
-        // template <class _Tp>
-        // static void construct(allocator_type&, _Tp *_p)
-        // {
-        //     new ((void *)_p) _Tp();
-        // }
         template <class _Tp, class _Up>
         static void construct(allocator_type &_alloc, _Tp *_p, _Up &_val)
         {

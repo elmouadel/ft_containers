@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/19 15:14:14 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/21 18:12:11 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include <cstring>
 #include <stdexcept>
 #include <algorithm>
-#include <type_traits>
 #include "./utils/utility.hpp"
 #include "./utils/algorithm.hpp"
 #include "./utils/vector_iterator.hpp"
@@ -71,23 +70,20 @@ namespace ft
     };
     
     template <class _Tp, class _Allocator>
-    inline void
-    _vector_base<_Tp, _Allocator>::_destruct_at_end(pointer _new_last)
+    void _vector_base<_Tp, _Allocator>::_destruct_at_end(pointer _new_last)
     {
-        pointer _soon_to_be_end = _end;
-        while (_new_last != _soon_to_be_end)
-            alloc_traits::destroy(_alloc, --_soon_to_be_end);
-        _end = _new_last;
+        while (_new_last != _end)
+            alloc_traits::destroy(_alloc, --_end);
     }
     template <class _Tp, class _Allocator>
-    inline _vector_base<_Tp, _Allocator>::_vector_base()
+    _vector_base<_Tp, _Allocator>::_vector_base()
         : _begin(nullptr),
           _end(nullptr),
           _end_l(nullptr)
     {
     }
     template <class _Tp, class _Allocator>
-    inline _vector_base<_Tp, _Allocator>::_vector_base(const allocator_type &_a)
+    _vector_base<_Tp, _Allocator>::_vector_base(const allocator_type &_a)
         : _begin(nullptr),
           _end(nullptr),
           _end_l(nullptr),
@@ -200,7 +196,7 @@ namespace ft
             assign(_ForwardIterator _first, _ForwardIterator _last);
            
 /* ************************************************************************** */
-            allocator_type get_allocator() const throw()
+            allocator_type get_allocator() const
             {
                 return (_base._alloc);
             }
@@ -209,46 +205,46 @@ namespace ft
                                 // iterators :(in)
 /* ************************************************************************** */
         private:
-            iterator _make_iter(pointer _p)  throw()
+            iterator _make_iter(pointer _p) 
             {
                 return (iterator(_p));
             }
-            const_iterator _make_iter(const_pointer _p) const throw()
+            const_iterator _make_iter(const_pointer _p) const
             {
                 return (const_iterator(_p));
             }
         public:
-            iterator begin() throw()
+            iterator begin()
             {
                 return (_make_iter(_base._begin));
             }
-            iterator end() throw()
+            iterator end()
             {
                 return (_make_iter(_base._end));
             }
-            reverse_iterator rbegin() throw()
+            reverse_iterator rbegin()
             {
                 return reverse_iterator(end());
             }
-            reverse_iterator rend() throw()
+            reverse_iterator rend()
             {
                 return reverse_iterator(begin());
             }
 /* ************************************************************************** */
                             // const iterators :(in)
-            const_iterator begin() const throw()
+            const_iterator begin() const
             {
                 return (_make_iter(_base._begin));
             }
-            const_iterator end() const throw()
+            const_iterator end() const
             {
                 return (_make_iter(_base._end));
             }
-            const_reverse_iterator rbegin() const throw()
+            const_reverse_iterator rbegin() const
             {
                 return const_reverse_iterator(end());
             }
-            const_reverse_iterator rend() const throw()
+            const_reverse_iterator rend() const
             {
                 return const_reverse_iterator(begin());
             }
@@ -256,27 +252,29 @@ namespace ft
 /* ************************************************************************** */
                             // Capacity functions :(in)
 /* ************************************************************************** */
-            size_type size() const throw()
+            size_type size() const
             {
                 return static_cast<size_type>(_base._end - _base._begin);
             }
 
-            size_type capacity() const throw()
+            size_type capacity() const
             {
                 return (_base._capacity());
             }
 
-            bool empty() const throw()
+            bool empty() const
             {
                 return (_base._begin == _base._end);
             }
-            size_type max_size() const throw()
+            size_type max_size() const
             {
                 return (std::min<size_type>(alloc_traits::max_size(_base._alloc),
                                 std::numeric_limits<difference_type>::max()));
             }
             void reserve(size_type _n)
             {
+                if (_n > max_size())
+                    _base._length_error();
                 if (_n > capacity())
                 {
                     tmp_buffer<value_type, allocator_type &> _v(_n, size(), _base._alloc);
@@ -311,28 +309,28 @@ namespace ft
 /* ************************************************************************** */
                         // get top functions :(in)
 /* ************************************************************************** */
-            reference front() throw()
+            reference front()
             {
                 return (*_base._begin);
             }
-            const_reference front() const throw()
+            const_reference front() const
             {
                 return (*_base._begin);
             }
-            reference back() throw()
+            reference back()
             {
                 return (*(_base._end - 1));
             }
-            const_reference back() const throw()
+            const_reference back() const
             {
                 return (*(_base._end - 1));
             }
 
-            value_type *data() throw()
+            value_type *data()
             {
                 return (_base._begin);
             }
-            const value_type *data() const throw()
+            const value_type *data() const
             {
                 return (_base._begin);
             }
@@ -372,7 +370,7 @@ namespace ft
 
             iterator erase(iterator _pos);
             iterator erase(iterator _first, iterator _last);
-            void clear() throw() {_base._clear(); }
+            void clear() {_base._clear(); }
             void resize(size_type _size, const_reference _val = value_type());
             void swap(vector &_v)
             {
@@ -436,7 +434,7 @@ namespace ft
     }
 
     template<class _Tp, class _Allocator>
-    inline void vector<_Tp, _Allocator>::_construct_at_end(size_type _n, const_reference _val)
+    void vector<_Tp, _Allocator>::_construct_at_end(size_type _n, const_reference _val)
     {
         for (; _n; --_n, ++_base._end)
             alloc_traits::construct(_base._alloc, _base._end, _val);
@@ -452,7 +450,6 @@ namespace ft
         _construct_and_swap_buffers(_v);
     }
     template <class _Tp, class _Allocator>
-    inline
     typename vector<_Tp, _Allocator>::size_type
     vector<_Tp, _Allocator>::_new_capacity(size_type _new_size) const
     {
@@ -499,7 +496,7 @@ namespace ft
                                 // assignment :(out)
 /* ************************************************************************** */
     template <class _Tp, class _Allocator>
-    inline vector<_Tp, _Allocator> &vector<_Tp, _Allocator>::operator=(const vector &_v)
+    vector<_Tp, _Allocator> &vector<_Tp, _Allocator>::operator=(const vector &_v)
     {
         if (this != &_v)
             assign(_v._base._begin, _v._base._end);
@@ -681,22 +678,19 @@ namespace ft
         else
         {
             tmp_buffer<value_type, allocator_type&> _v(_new_capacity(this->size() + _n), _p - _base._begin, _base._alloc);
-            
-            for (; _first != _last; ++_first, ++_v._tmp._end)
-                alloc_traits::construct(_v._tmp._alloc, _v._tmp._end, *_first);
-                
+            alloc_traits::construct_range_forward(_base._alloc, _first, _last, _v._tmp._end);  
             _p = _construct_and_swap_buffers(_v, _p);
         }
         return (_make_iter(_p));
     }
     template <class _Tp, class _Allocator>
-    inline typename vector<_Tp, _Allocator>::iterator
+    typename vector<_Tp, _Allocator>::iterator
     vector<_Tp, _Allocator>::erase(iterator _pos)
     {
         pointer _p = _base._begin + (_pos - begin());
         iterator _ret = _make_iter(_p);
-        if (_p >= _base._end)
-            return (_ret);
+        // if (_p >= _base._end)
+        //     return (_ret);
         std::memmove(_p, _p + 1, (_base._end - _p - 1) * sizeof(*_p));
         alloc_traits::destroy(_base._alloc, --_base._end);
         return (_ret);
@@ -709,11 +703,9 @@ namespace ft
         pointer _p_first = _base._begin + (_first - begin());
         iterator _ret = _make_iter(_p_first);
         
-        for (; _p_last != _base._end ; ++_p_first, ++_p_last)
-            *_p_first = *_p_last;
-        
-        for (; _p_first != _base._end; --_base._end)
-            alloc_traits::destroy(_base._alloc, _base._end - 1);
+        std::memmove(_p_first, _p_last, (_base._end - _p_last) * sizeof(*_p_first));
+        _p_first += _base._end - _p_last;
+        _base._destruct_at_end(_p_first);
         return (_ret);
     }
     template <class _Tp, class _Allocator>
@@ -725,14 +717,13 @@ namespace ft
             _base._destruct_at_end(_base._begin + _size);
         else if (_size > _hol_size)
         {
-            if (_size <= static_cast<size_type>(_base._end_l - _base._begin))
+            if (_size <= capacity())
                 _construct_at_end(_n, _val);
             else
             {
                 tmp_buffer<value_type, allocator_type&> _v(_new_capacity(_hol_size + _n), _hol_size, _base._alloc);
-                for (; _n; --_n, ++_v._tmp._end)
-                    alloc_traits::construct(_base._alloc, _v._tmp._end, _val);
                 _construct_and_swap_buffers(_v);
+                _construct_at_end(_n, _val);
             }    
         }
     }

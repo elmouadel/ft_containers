@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/01 14:56:06 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/18 18:00:20 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/21 17:52:15 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
-#include <type_traits>
 #include "./rb_tree.hpp"
 #include "./utility.hpp"
 #include "./reverse_iterator.hpp"
@@ -147,7 +146,7 @@ namespace ft
         tree(const tree &_t)
             : _alloc(_t._alloc), _n_alloc(_t._alloc), _k_comp(_t._k_comp), _size(0)
         {
-           _end_node = n_alloc_traits::allocate(_n_alloc, 1);
+            _end_node = n_alloc_traits::allocate(_n_alloc, 1);
             _begin_node = _end_node;
             _end_node->_parent = _end_node->_left = _end_node->_right = nullptr;
         }
@@ -515,8 +514,10 @@ namespace ft
             {
                 if (_n->_parent->_color == _black_n)
                     return;
+                // check parent sibling color
                 if (!_is_red_sibling(_n->_parent))
                 {
+                    // do suitable rotation
                     if (_tree_is_left_child(_n->_parent))
                     {
                         if (!_tree_is_left_child(_n))
@@ -534,15 +535,19 @@ namespace ft
                             _n = _n->_parent;
                         _left_rotate_tree(_n);
                     }
+                    // give black to the parent 
                     _n->_color = _black_n;
+                    // and red to the children
                     _n->_left->_color = _n->_right->_color = _red_n;
                     return ; 
                 }
                 else
                 {
+                    // take the red to a higher level
                     if (_n->_parent->_parent != _root)
                         _n->_parent->_parent->_color = _red_n;
                     _n->_parent->_parent->_left->_color = _n->_parent->_parent->_right->_color = _black_n;
+                    // move _n to the new red node and continue
                     _n = _n->_parent->_parent;
                 }
             }
@@ -648,6 +653,8 @@ namespace ft
         void _tree_delete_node(node_ptr _root, node_ptr _n) const
         {
             _get_leaf_node(_n);
+            // if the node to be deleted is red or it's the root of the tree
+            // give null to its parent and exit
             if (_is_leaf_red_node(_n) || _n == _root)
                 return _assign_to_right_parent(_n, (node_ptr)nullptr);
             
@@ -655,18 +662,22 @@ namespace ft
             node_ptr _old_n = _n;
             node_ptr _s;
             _s = _get_node_sibling(_n, _root);
+            // loop to until no double black
             while (_n->_color == _black_n)
             {
                 if (_n == _root)
                     break;
+                // check the color of the "double black node sibling" = _s
                 if (_s->_color == _black_n)
                 {
+                    // check the color of _s children
                     if (_has_black_children(_s))
                     {
                         _s->_color = _red_n;
+                        // if _s parent color is red change it to black and break the loop
                         if (_s->_parent->_color == _red_n)
                             { _s->_parent->_color = _black_n; break; }
-                        
+                        // else move the double black to _s parent and continue
                         _n = _n->_parent;
                         _s = _get_node_sibling(_n, _root);
                         continue;
@@ -678,7 +689,8 @@ namespace ft
                     { _far_n = _s->_right; _near_n = _s->_left; }
                     else
                     { _far_n = _s->_left; _near_n = _s->_right; }
-                    //***********************
+                    
+                    // if far nephew is red
                     if (_far_n && _far_n->_color == _red_n)
                     {
                         std::swap(_s->_color, _n->_parent->_color);
@@ -686,6 +698,7 @@ namespace ft
                         _far_n->_color = _black_n;
                         break;
                     }
+                    // if near nephew is red
                     else
                     {
                         std::swap(_s->_color, _near_n->_color);
@@ -693,6 +706,7 @@ namespace ft
                         _s = _near_n; 
                     }
                 }
+                // if _s color is red
                 else
                 {
                     std::swap(_s->_color, _n->_parent->_color);

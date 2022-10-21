@@ -6,15 +6,14 @@
 #    By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/15 08:46:38 by eabdelha          #+#    #+#              #
-#    Updated: 2022/10/19 12:28:20 by eabdelha         ###   ########.fr        #
+#    Updated: 2022/10/21 18:34:54 by eabdelha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .PHONY : all clean fclean re 
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g
-# -Wpedantic
+CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 FT_NAME = ftcontainers
 STD_NAME = stdcontainers
@@ -27,12 +26,15 @@ OBJ_PATH = ./obj/
 
 SRC_INCLUDES =	$(SRC_PATH)vector.hpp			\
 				$(SRC_PATH)map.hpp				\
-				$(SRC_PATH)stack.hpp				\
+				$(SRC_PATH)set.hpp				\
+				$(SRC_PATH)stack.hpp			\
 				$(UTLS_PATH)utility.hpp				\
 				$(UTLS_PATH)rb_tree.hpp				\
 				$(UTLS_PATH)algorithm.hpp			\
 				$(UTLS_PATH)vector_iterator.hpp		\
+				$(UTLS_PATH)rb_tree_iterator.hpp	\
 				$(UTLS_PATH)iterator_traits.hpp		\
+				$(UTLS_PATH)allocator_traits.hpp	\
 				$(UTLS_PATH)reverse_iterator.hpp	\
 
 FT_TESTS	=	ft_main.cpp

@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 10:39:12 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/19 12:23:47 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/21 18:20:51 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ namespace ft
                                 // move_backward :
 /* ************************************************************************** */
     template <class _Ptr>
-    void move_backward(_Ptr _first, _Ptr _last, _Ptr _result)
+    inline void move_backward(_Ptr _first, _Ptr _last, _Ptr _result)
     {
         while (_first != _last)
             *--_result = *--_last;

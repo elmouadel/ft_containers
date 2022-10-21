@@ -6,14 +6,13 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 15:56:10 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/18 18:27:03 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/19 22:11:29 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STACK_HPP
 #define STACK_HPP
 
-#include <stack>
 #include "vector.hpp"
 
 namespace ft

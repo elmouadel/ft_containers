@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/15 21:17:30 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/18 21:16:15 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/21 18:14:23 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
-#include <type_traits>
 #include "./utils/rb_tree.hpp"
 #include "./utils/utility.hpp"
 #include "./utils/reverse_iterator.hpp"
@@ -214,37 +213,37 @@ namespace ft
             }
     };
     template<typename _key, typename _Compaire, typename _Alloc>
-    bool operator==(const set<_key, _Compaire, _Alloc> &_lhs,
+    inline bool operator==(const set<_key, _Compaire, _Alloc> &_lhs,
                     const set<_key, _Compaire, _Alloc> &_rhs)
     {
         return (_lhs.size() == _rhs.size() && std::equal(_lhs.begin(), _lhs.end(), _rhs.begin()));
     }
     template<typename _key, typename _Compaire, typename _Alloc>
-    bool operator<(const set<_key, _Compaire, _Alloc> &_lhs,
+    inline bool operator<(const set<_key, _Compaire, _Alloc> &_lhs,
                     const set<_key, _Compaire, _Alloc> &_rhs)
     {
         return (std::lexicographical_compare(_lhs.begin(), _lhs.end(), _rhs.begin(), _rhs.end()));
     }
     template<typename _key, typename _Compaire, typename _Alloc>
-    bool operator!=(const set<_key, _Compaire, _Alloc> &_lhs,
+    inline bool operator!=(const set<_key, _Compaire, _Alloc> &_lhs,
                     const set<_key, _Compaire, _Alloc> &_rhs)
     {
         return !(_lhs == _rhs);
     }
     template<typename _key, typename _Compaire, typename _Alloc>
-    bool operator>(const set<_key, _Compaire, _Alloc> &_lhs,
+    inline bool operator>(const set<_key, _Compaire, _Alloc> &_lhs,
                     const set<_key, _Compaire, _Alloc> &_rhs)
     {
         return (_rhs < _lhs);
     }
     template<typename _key, typename _Compaire, typename _Alloc>
-    bool operator>=(const set<_key, _Compaire, _Alloc> &_lhs,
+    inline bool operator>=(const set<_key, _Compaire, _Alloc> &_lhs,
                     const set<_key, _Compaire, _Alloc> &_rhs)
     {
         return !(_lhs < _rhs);
     }
     template<typename _key, typename _Compaire, typename _Alloc>
-    bool operator<=(const set<_key, _Compaire, _Alloc> &_lhs,
+    inline bool operator<=(const set<_key, _Compaire, _Alloc> &_lhs,
                     const set<_key, _Compaire, _Alloc> &_rhs)
     {
         return !(_rhs < _lhs);
