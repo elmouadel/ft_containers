@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:29:18 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/21 18:04:24 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/22 09:13:00 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ void ft_tests(void)
         it_vi = vector_tmp_int.begin();
         ft::swap(vector_int, vector_tmp_int);
         ft::vector<int>::const_iterator it_vic = vector_int.end();
+        ft::vector<int>::iterator it_vic2 = vector_int.end();
+        if (it_vic == it_vic2){}
         for (; it_vi != it_vic; ++it_vi, ++arr)
             *it_vi = *arr;
 
@@ -488,6 +490,6 @@ int main(int argc, char **argv)
     srand(seed);
 
     ft_tests();
-    // system("leaks ftcontainers");
+    system("leaks ftcontainers");
     return (0);
 }

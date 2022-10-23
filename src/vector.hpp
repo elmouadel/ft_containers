@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/02 10:20:51 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/21 18:12:11 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/22 09:09:18 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,7 @@ namespace ft
             }
             template <class _InputIterator>
             vector (_InputIterator _first, _InputIterator _last, const allocator_type& _a = allocator_type(),
-                typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value && 
-                !ft::is_forward_iterator<_InputIterator>::value>::type* = 0) :
+                typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value>::type* = 0) :
                     _base(_a)
             {
                 for (; _first != _last; ++_first)
@@ -187,8 +186,7 @@ namespace ft
             void assign(size_type _n, const_reference _val);
             
             template <class _InputIterator>
-                typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value &&
-                !ft::is_forward_iterator<_InputIterator>::value, void>::type
+                typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value, void>::type
             assign(_InputIterator _first, _InputIterator _last);
 
             template <class _ForwardIterator>    
@@ -357,8 +355,7 @@ namespace ft
             
             template <class _InputIter>
             typename ft::enable_if<
-                    ft::is_input_iterator<_InputIter>::value && 
-                    !ft::is_forward_iterator<_InputIter>::value, 
+                    ft::is_input_iterator<_InputIter>::value, 
                     typename vector<Tp, Allocator>::iterator>::type 
             insert(const_iterator _pos, _InputIter _first, _InputIter _last);
             
@@ -504,8 +501,7 @@ namespace ft
     }
     template <class _Tp, class _Allocator>
     template <class _InputIterator>
-        typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value &&
-        !ft::is_forward_iterator<_InputIterator>::value, void>::type
+        typename ft::enable_if<ft::is_input_iterator<_InputIterator>::value, void>::type
     vector<_Tp, _Allocator>::assign(_InputIterator _first, _InputIterator _last)
     {
         _base._clear();
@@ -635,8 +631,7 @@ namespace ft
     template <class _Tp, class _Allocator>
     template <class _InputIter>
     typename ft::enable_if<
-                ft::is_input_iterator<_InputIter>::value && 
-                !ft::is_forward_iterator<_InputIter>::value, 
+                ft::is_input_iterator<_InputIter>::value, 
                 typename vector<_Tp, _Allocator>::iterator
             >::type vector<_Tp, _Allocator>::insert(const_iterator _pos, _InputIter _first, _InputIter _last)
     {

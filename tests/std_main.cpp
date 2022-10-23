@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 12:29:06 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/19 12:32:38 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/22 09:13:49 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ void ft_tests(void)
         it_vi = vector_tmp_int.begin();
         ft::swap(vector_int, vector_tmp_int);
         ft::vector<int>::const_iterator it_vic = vector_int.end();
+        ft::vector<int>::iterator it_vic2 = vector_int.end();
+        if (it_vic == it_vic2){}
         for (; it_vi != it_vic; ++it_vi, ++arr)
             *it_vi = *arr;
 

@@ -6,12 +6,12 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 18:13:22 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/16 16:16:01 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/22 09:28:28 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef VECTOR_UTILS_HPP
-#define VECTOR_UTILS_HPP
+#ifndef UTILITY_HPP
+#define UTILITY_HPP
 
 #include "./iterator_traits.hpp"
 

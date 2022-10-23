@@ -6,7 +6,7 @@
 /*   By: eabdelha <eabdelha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/15 21:17:30 by eabdelha          #+#    #+#             */
-/*   Updated: 2022/10/21 18:14:23 by eabdelha         ###   ########.fr       */
+/*   Updated: 2022/10/22 07:47:36 by eabdelha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ namespace ft
                 typename _base::node_ptr _pos = _tree.root();
 
                 if (_tree._find_parent(_pos, _key))
-                    return (iterator(_tree.root()->_parent));
+                    return (iterator(_tree.end_node()));
                 return (iterator(_pos));
             }
             size_type count(const key_type &_key) const
